@@ -1,0 +1,324 @@
+---
+alwaysApply: true
+---
+
+# Data Access Security with Clerk
+
+**Purpose:** Ensure all database queries and API routes properly enforce user data isolation using Clerk authentication.
+
+**Critical Rule:** Users must ONLY be able to access, modify, or delete their own data. Never expose data belonging to other users.
+
+---
+
+## 1. Authentication Check - Always Required
+
+Before ANY database operation, you must:
+
+1. **Authenticate the user** using Clerk's `auth()` function
+2. **Extract the userId** from the auth result
+3. **Verify the userId exists** (user is signed in)
+4. **Filter ALL queries** by this userId
+
+### Correct Pattern for Server Actions and API Routes
+
+```typescript
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/db";
+import { decksTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+export async function getMyDecks() {
+  // 1. Get authenticated user
+  const { userId } = await auth();
+  
+  // 2. Verify user is signed in
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  
+  // 3. Query ONLY this user's data
+  const decks = await db
+    .select()
+    .from(decksTable)
+    .where(eq(decksTable.userId, userId)); // ✅ CRITICAL: Filter by userId
+  
+  return decks;
+}
+```
+
+---
+
+## 2. NEVER Trust Client-Provided IDs
+
+**❌ WRONG - Security Vulnerability:**
+
+```typescript
+// DO NOT DO THIS - Client could pass any userId
+export async function getDecks(userId: string) {
+  const decks = await db
+    .select()
+    .from(decksTable)
+    .where(eq(decksTable.userId, userId)); // ❌ Trusting client input!
+  
+  return decks;
+}
+```
+
+**✅ CORRECT - Always Use Server-Side Auth:**
+
+```typescript
+export async function getDecks() {
+  const { userId } = await auth(); // ✅ Get userId from Clerk auth
+  
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  
+  const decks = await db
+    .select()
+    .from(decksTable)
+    .where(eq(decksTable.userId, userId)); // ✅ Use authenticated userId
+  
+  return decks;
+}
+```
+
+---
+
+## 3. Authorization for Nested Resources
+
+When accessing nested resources (e.g., cards within a deck), you must verify ownership at EVERY level.
+
+**Example: Updating a Card**
+
+```typescript
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/db";
+import { decksTable, cardsTable } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
+
+export async function updateCard(cardId: number, front: string, back: string) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  
+  // 1. Get the card with its parent deck
+  const card = await db
+    .select()
+    .from(cardsTable)
+    .where(eq(cardsTable.id, cardId))
+    .limit(1);
+  
+  if (!card[0]) {
+    throw new Error("Card not found");
+  }
+  
+  // 2. Verify the deck belongs to the authenticated user
+  const deck = await db
+    .select()
+    .from(decksTable)
+    .where(
+      and(
+        eq(decksTable.id, card[0].deckId),
+        eq(decksTable.userId, userId) // ✅ Verify ownership
+      )
+    )
+    .limit(1);
+  
+  if (!deck[0]) {
+    throw new Error("Unauthorized - deck does not belong to user");
+  }
+  
+  // 3. Now safe to update the card
+  await db
+    .update(cardsTable)
+    .set({ front, back })
+    .where(eq(cardsTable.id, cardId));
+}
+```
+
+---
+
+## 4. Delete Operations - Double Check Ownership
+
+Delete operations are especially critical. Always verify ownership before deletion.
+
+```typescript
+export async function deleteDeck(deckId: number) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  
+  // Verify deck belongs to user before deleting
+  const result = await db
+    .delete(decksTable)
+    .where(
+      and(
+        eq(decksTable.id, deckId),
+        eq(decksTable.userId, userId) // ✅ Only delete if user owns it
+      )
+    )
+    .returning();
+  
+  if (result.length === 0) {
+    throw new Error("Deck not found or unauthorized");
+  }
+  
+  return result[0];
+}
+```
+
+---
+
+## 5. API Routes Protection
+
+All API routes must be protected with Clerk authentication.
+
+```typescript
+// app/api/decks/route.ts
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  
+  // Proceed with userId-filtered query
+  const decks = await db
+    .select()
+    .from(decksTable)
+    .where(eq(decksTable.userId, userId));
+  
+  return NextResponse.json(decks);
+}
+```
+
+---
+
+## 6. Server Actions Protection
+
+Next.js Server Actions must also verify authentication.
+
+```typescript
+"use server";
+
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/db";
+import { decksTable } from "@/db/schema";
+import { revalidatePath } from "next/cache";
+
+export async function createDeck(title: string, description: string) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  
+  const [newDeck] = await db
+    .insert(decksTable)
+    .values({
+      userId, // ✅ Associate with authenticated user
+      title,
+      description,
+    })
+    .returning();
+  
+  revalidatePath("/decks");
+  return newDeck;
+}
+```
+
+---
+
+## 7. Common Patterns Summary
+
+### ✅ DO:
+- Always call `await auth()` at the start of server actions and API routes
+- Always check if `userId` exists before proceeding
+- Always filter database queries by the authenticated `userId`
+- Always verify ownership for nested resources (cards in decks, etc.)
+- Use `and()` operator to combine ownership checks with other conditions
+- Return appropriate error messages for unauthorized access
+
+### ❌ DON'T:
+- Never trust userId from client/props/parameters
+- Never query data without filtering by authenticated userId
+- Never skip authentication checks
+- Never assume a resource belongs to a user without verification
+- Never expose data from other users in responses
+
+---
+
+## 8. Integration with Drizzle Schema
+
+All tables storing user data should have a `userId` field:
+
+```typescript
+// Reference: src/db/schema.ts
+import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+export const decksTable = pgTable("decks", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(), // ✅ Links to Clerk user
+  title: text("title").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+```
+
+Every table with user-specific data must include `userId` for proper filtering.
+
+---
+
+## 9. Error Handling
+
+Use consistent error messages and HTTP status codes:
+
+- **401 Unauthorized**: User is not authenticated
+- **403 Forbidden**: User is authenticated but doesn't own the resource
+- **404 Not Found**: Resource doesn't exist OR user doesn't own it (don't leak information)
+
+```typescript
+if (!userId) {
+  return NextResponse.json(
+    { error: "Unauthorized - please sign in" },
+    { status: 401 }
+  );
+}
+
+if (!deck) {
+  return NextResponse.json(
+    { error: "Deck not found" }, // Don't reveal if it exists but belongs to someone else
+    { status: 404 }
+  );
+}
+```
+
+---
+
+## 10. Verification Checklist
+
+Before implementing any database operation, verify:
+
+- [ ] `await auth()` is called to get userId
+- [ ] userId existence is checked (user is signed in)
+- [ ] Database query includes `.where(eq(tableName.userId, userId))`
+- [ ] For nested resources, parent ownership is verified
+- [ ] No client-provided userId is trusted
+- [ ] Appropriate error handling is in place
+- [ ] Delete operations verify ownership before executing
+
+---
+
+**Remember:** Security is not optional. Every data access point must enforce user isolation through Clerk authentication and proper query filtering.

@@ -1,0 +1,116 @@
+---
+alwaysApply: true
+description: Guidelines for database interactions using Drizzle ORM
+---
+
+# Drizzle Database Integration
+
+This project uses **Drizzle ORM** for all database interactions with PostgreSQL.
+
+## Schema Location
+
+The database schema is defined in [src/db/schema.ts](mdc:flashy-cards/src/db/schema.ts) and includes:
+
+- **decksTable**: Stores flashcard decks created by users
+  - Links to Clerk user ID for authentication
+  - Contains title, description, and timestamps
+  
+- **cardsTable**: Stores individual flashcards within decks
+  - Has foreign key relationship to decksTable
+  - Contains front (question) and back (answer) fields
+  - Cascade delete when parent deck is deleted
+
+## Database Interaction Rules
+
+### Always Use Drizzle Schema
+
+1. **Import tables from schema**: Always import table definitions from `@/db/schema`
+   ```typescript
+   import { decksTable, cardsTable } from "@/db/schema";
+   ```
+
+2. **Use Drizzle query syntax**: Never use raw SQL queries. Always use Drizzle's type-safe query builder
+   ```typescript
+   import { db } from "@/db";
+   import { eq, and, desc } from "drizzle-orm";
+   
+   // Example: Query decks for a user
+   const userDecks = await db
+     .select()
+     .from(decksTable)
+     .where(eq(decksTable.userId, userId))
+     .orderBy(desc(decksTable.createdAt));
+   ```
+
+3. **Leverage relations**: Use the defined relations for joining tables
+   ```typescript
+   // The schema defines relations that can be used for queries
+   import { decksRelations, cardsRelations } from "@/db/schema";
+   ```
+
+### Common Query Patterns
+
+**Select queries**:
+```typescript
+// Get all decks for a user
+const decks = await db.select().from(decksTable).where(eq(decksTable.userId, userId));
+
+// Get a specific deck with cards
+const deck = await db.select().from(decksTable).where(eq(decksTable.id, deckId));
+const cards = await db.select().from(cardsTable).where(eq(cardsTable.deckId, deckId));
+```
+
+**Insert queries**:
+```typescript
+// Insert a new deck
+const [newDeck] = await db.insert(decksTable).values({
+  userId: userId,
+  title: "My Deck",
+  description: "Description here",
+}).returning();
+
+// Insert a new card
+const [newCard] = await db.insert(cardsTable).values({
+  deckId: deckId,
+  front: "Question",
+  back: "Answer",
+}).returning();
+```
+
+**Update queries**:
+```typescript
+// Update a deck
+await db.update(decksTable)
+  .set({ 
+    title: "Updated Title",
+    updatedAt: new Date(),
+  })
+  .where(eq(decksTable.id, deckId));
+```
+
+**Delete queries**:
+```typescript
+// Delete a deck (will cascade to cards)
+await db.delete(decksTable).where(eq(decksTable.id, deckId));
+
+// Delete a specific card
+await db.delete(cardsTable).where(eq(cardsTable.id, cardId));
+```
+
+### Important Guidelines
+
+- **Type Safety**: Always leverage Drizzle's TypeScript types for compile-time safety
+- **No Raw SQL**: Avoid raw SQL queries; use Drizzle's query builder
+- **Use Operators**: Import and use Drizzle operators (`eq`, `and`, `or`, `like`, `gt`, `lt`, etc.)
+- **Returning Data**: Use `.returning()` on insert/update operations when you need the modified data
+- **User Authorization**: Always filter queries by `userId` from Clerk to ensure users only access their own data
+- **Timestamps**: Remember that `updatedAt` needs to be manually set on updates (it doesn't auto-update)
+
+### Database Connection
+
+The database connection instance should be imported from a centralized location:
+```typescript
+import { db } from "@/db";
+```
+
+If this file doesn't exist yet, it should be created to initialize the Drizzle client with the database connection.
