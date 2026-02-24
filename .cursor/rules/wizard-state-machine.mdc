@@ -1,0 +1,25 @@
+---
+alwaysApply: true
+description: Wizard phase runner and process state machine rules
+---
+
+# Wizard + State Machine Rules
+
+The wizard must be driven by each phase's `process.json` state machine.
+
+## Supported State Types
+Implement these state types as reusable components/handlers:
+- `form_wizard` (max 2 questions per step, autosave, back)
+- `ai_action` (runs server-side, stores draft artifacts)
+- `results_dashboard` (renders views from views.json)
+- `approval_gate` (approve/adjust/simplify, max 3 iterations)
+- `form` (adjust intake form)
+- `lock_variant` (select A/B -> create locked artifact)
+- `lock_phase` (lock artifacts, version increment)
+- `results_variant_selector` (Phase 2/3: choose between two variants)
+
+## Flow Guardrails
+- Never ask "is it feasible?" before showing a draft/final result.
+- Approval gates must appear only after results are visible.
+- Enforce `max_iterations` and provide simplify fallback states if defined in spec.
+- Use autosave for answers after every step change.

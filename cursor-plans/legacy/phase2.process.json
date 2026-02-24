@@ -1,0 +1,131 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_2",
+      "phase_name": "Strategieformulierung",
+      "wizard_layout": true,
+      "max_iterations": 3,
+      "variant_output": "three_options"
+    },
+    "state_machine": {
+      "start_state": "p2_collect_inputs",
+      "states": [
+        {
+          "id": "p2_collect_inputs",
+          "type": "form_wizard",
+          "question_refs": [
+            "p2_ambition_level",
+            "p2_priority_focus",
+            "p2_impact_goal",
+            "p2_person_visibility",
+            "p2_brand_style",
+            "p2_polarization",
+            "p2_success_12m",
+            "p2_main_development_12_24m"
+          ],
+          "step_rules": {
+            "max_questions_per_step": 2,
+            "show_progress": true,
+            "allow_back": true,
+            "autosave": true
+          },
+          "on_complete": "p2_generate_variants"
+        },
+        {
+          "id": "p2_generate_variants",
+          "type": "ai_action",
+          "action": "generate_phase2_guidelines_three_variants",
+          "inputs": ["answers.phase_1", "artifacts.strategy_profile", "answers.phase_2"],
+          "outputs": ["strategic_guidelines_variants"],
+          "on_complete": "p2_present_variants"
+        },
+        {
+          "id": "p2_present_variants",
+          "type": "results_variant_selector",
+          "artifact_ref": "strategic_guidelines_variants",
+          "ui": { "default_selected": "balanced" },
+          "on_select": "p2_lock_variant",
+          "on_request_changes": "p2_adjust_intake"
+        },
+        {
+          "id": "p2_lock_variant",
+          "type": "lock_variant",
+          "source_artifact": "strategic_guidelines_variants",
+          "locked_artifact_id": "strategic_guidelines",
+          "versioning": { "mode": "increment", "format": "v{n}" },
+          "on_complete": "p2_results_dashboard"
+        },
+        {
+          "id": "p2_results_dashboard",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "primary_views": [
+            "guidelines_hero",
+            "vision_card",
+            "mission_card",
+            "goals_timeline"
+          ],
+          "on_complete": "p2_approval_gate"
+        },
+        {
+          "id": "p2_approval_gate",
+          "type": "approval_gate",
+          "question": "Passt diese Vision, Mission und Ziel-Roadmap für dich?",
+          "options": [
+            { "id": "approve", "label": "Ja, passt" },
+            { "id": "adjust", "label": "Nein, bitte anpassen" }
+          ],
+          "max_iterations": 3,
+          "on_approve": "p2_lock_phase",
+          "on_adjust": "p2_adjust_intake",
+          "on_max_iterations_reached": "p2_force_minimal_lock"
+        },
+        {
+          "id": "p2_adjust_intake",
+          "type": "form",
+          "fields": [
+            {
+              "id": "p2_adjust_area",
+              "type": "single_choice",
+              "label": "Was soll angepasst werden?",
+              "options": [
+                { "id": "vision", "label": "Vision" },
+                { "id": "mission", "label": "Mission" },
+                { "id": "goals", "label": "Ziele" }
+              ],
+              "required": true
+            },
+            {
+              "id": "p2_adjust_notes",
+              "type": "short_text",
+              "label": "Was soll anders werden?",
+              "required": true,
+              "validation": { "min_chars": 8, "max_chars": 260 }
+            }
+          ],
+          "on_complete": "p2_regenerate_guidelines"
+        },
+        {
+          "id": "p2_regenerate_guidelines",
+          "type": "ai_action",
+          "action": "regenerate_phase2_guidelines",
+          "inputs": ["answers.phase_1", "artifacts.strategy_profile", "answers.phase_2", "artifacts.strategic_guidelines", "answers.phase_2_adjustments"],
+          "outputs": ["strategic_guidelines"],
+          "on_complete": "p2_results_dashboard"
+        },
+        {
+          "id": "p2_force_minimal_lock",
+          "type": "ai_action",
+          "action": "simplify_phase2_guidelines_to_minimal_viable",
+          "on_complete": "p2_lock_phase"
+        },
+        {
+          "id": "p2_lock_phase",
+          "type": "lock_phase",
+          "locks": ["strategic_guidelines"],
+          "on_complete": "phase_3_start"
+        }
+      ]
+    }
+  }
+  

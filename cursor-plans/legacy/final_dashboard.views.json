@@ -1,0 +1,150 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "dashboard_id": "final_dashboard",
+      "title": "Gesamt-Dashboard",
+      "design_style": "bold_high_contrast",
+      "layout": "dashboard_deep_filterable"
+    },
+    "data_sources": [
+      "strategy_profile",
+      "pestel",
+      "porter_5_forces",
+      "swot",
+      "strategic_group_map",
+      "market_segmentation",
+      "target_profiles",
+      "strategic_guidelines",
+      "positioning_and_brand_core",
+      "marketing_plan",
+      "content_plan"
+    ],
+    "filters": [
+      {
+        "id": "phase_filter",
+        "type": "multi_choice",
+        "label": "Phasen",
+        "options": [
+          { "id": "phase_1", "label": "Phase 1" },
+          { "id": "phase_2", "label": "Phase 2" },
+          { "id": "phase_3", "label": "Phase 3" },
+          { "id": "phase_4", "label": "Phase 4" },
+          { "id": "phase_5", "label": "Phase 5" }
+        ],
+        "default": ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]
+      },
+      {
+        "id": "view_mode",
+        "type": "single_choice",
+        "label": "Ansicht",
+        "options": [
+          { "id": "summary", "label": "Summary" },
+          { "id": "full", "label": "Full" }
+        ],
+        "default": "full"
+      }
+    ],
+    "sections": [
+      {
+        "id": "exec_summary",
+        "title": "Strategie in 60 Sekunden",
+        "collapsible": true,
+        "default_open": true,
+        "edit": { "enabled": true, "phase_id": "phase_2", "label": "Edit (Vision/Mission/Ziele)" },
+        "views": [
+          { "view_id": "strategy_profile_hero", "artifact_id": "strategy_profile" },
+          { "view_id": "guidelines_hero", "artifact_id": "strategic_guidelines" },
+          { "view_id": "positioning_hero", "artifact_id": "positioning_and_brand_core" }
+        ]
+      },
+      {
+        "id": "phase_1_section",
+        "title": "Phase 1 — Situationsanalyse",
+        "collapsible": true,
+        "default_open": false,
+        "edit": { "enabled": true, "phase_id": "phase_1", "label": "Edit Phase 1" },
+        "views": [
+          { "view_id": "pestel_radar", "artifact_id": "pestel" },
+          { "view_id": "porter_bars", "artifact_id": "porter_5_forces" },
+          { "view_id": "swot_grid", "artifact_id": "swot" },
+          { "view_id": "group_map_scatter", "artifact_id": "strategic_group_map" },
+          { "view_id": "segmentation_cards", "artifact_id": "market_segmentation" },
+          { "view_id": "target_profile_cards", "artifact_id": "target_profiles" }
+        ]
+      },
+      {
+        "id": "phase_2_section",
+        "title": "Phase 2 — Strategieformulierung",
+        "collapsible": true,
+        "default_open": false,
+        "edit": { "enabled": true, "phase_id": "phase_2", "label": "Edit Phase 2" },
+        "views": [
+          { "view_id": "vision_card", "artifact_id": "strategic_guidelines" },
+          { "view_id": "mission_card", "artifact_id": "strategic_guidelines" },
+          { "view_id": "goals_timeline", "artifact_id": "strategic_guidelines" }
+        ]
+      },
+      {
+        "id": "phase_3_section",
+        "title": "Phase 3 — Positionierung & Marke",
+        "collapsible": true,
+        "default_open": false,
+        "edit": { "enabled": true, "phase_id": "phase_3", "label": "Edit Phase 3" },
+        "views": [
+          { "view_id": "positioning_canvas", "artifact_id": "positioning_and_brand_core" },
+          { "view_id": "competitive_strategy_compare", "artifact_id": "positioning_and_brand_core" },
+          { "view_id": "brand_prism_visual", "artifact_id": "positioning_and_brand_core" },
+          { "view_id": "brand_wheel_visual", "artifact_id": "positioning_and_brand_core" },
+          { "view_id": "brand_voice_card", "artifact_id": "positioning_and_brand_core" }
+        ]
+      },
+      {
+        "id": "phase_4_section",
+        "title": "Phase 4 — Marketing-Mix & Maßnahmen",
+        "collapsible": true,
+        "default_open": false,
+        "edit": { "enabled": true, "phase_id": "phase_4", "label": "Edit Phase 4" },
+        "views": [
+          { "view_id": "mix_radar", "artifact_id": "marketing_plan" },
+          { "view_id": "mix_cards", "artifact_id": "marketing_plan" },
+          { "view_id": "channels_stack", "artifact_id": "marketing_plan" },
+          { "view_id": "measures_kanban", "artifact_id": "marketing_plan" },
+          { "view_id": "constraints_card", "artifact_id": "marketing_plan" }
+        ]
+      },
+      {
+        "id": "phase_5_section",
+        "title": "Phase 5 — Content & Umsetzung",
+        "collapsible": true,
+        "default_open": false,
+        "edit": { "enabled": true, "phase_id": "phase_5", "label": "Edit Phase 5" },
+        "views": [
+          { "view_id": "pillars_cards", "artifact_id": "content_plan" },
+          { "view_id": "editorial_board_4w", "artifact_id": "content_plan" },
+          { "view_id": "briefings_list", "artifact_id": "content_plan" }
+        ]
+      }
+    ],
+    "export_actions": [
+      {
+        "id": "export_pdf",
+        "label": "PDF exportieren",
+        "type": "action_button",
+        "action": "export_strategy_pdf",
+        "inputs": [
+          "strategy_profile",
+          "pestel",
+          "porter_5_forces",
+          "swot",
+          "strategic_group_map",
+          "market_segmentation",
+          "target_profiles",
+          "strategic_guidelines",
+          "positioning_and_brand_core",
+          "marketing_plan",
+          "content_plan"
+        ]
+      }
+    ]
+  }
+  

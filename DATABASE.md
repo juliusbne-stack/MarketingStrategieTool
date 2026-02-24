@@ -40,51 +40,61 @@ npm run db:example
 
 ```typescript
 import { db } from '@/db';
-import { usersTable } from '@/db/schema';
+import { yourTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 ```
 
 ### Create (Insert)
 
 ```typescript
-await db.insert(usersTable).values({
-  name: 'John Doe',
-  age: 30,
-  email: 'john@example.com',
+await db.insert(yourTable).values({
+  userId: 'clerk_user_id',
+  title: 'Example',
+  // ... your columns
 });
 ```
 
 ### Read (Select)
 
 ```typescript
-// Get all users
-const users = await db.select().from(usersTable);
+// Get all items
+const items = await db.select().from(yourTable);
 
-// Get specific user
-const user = await db
+// Get specific item
+const item = await db
   .select()
-  .from(usersTable)
-  .where(eq(usersTable.email, 'john@example.com'));
+  .from(yourTable)
+  .where(eq(yourTable.id, id));
 ```
 
 ### Update
 
 ```typescript
 await db
-  .update(usersTable)
-  .set({ age: 31 })
-  .where(eq(usersTable.email, 'john@example.com'));
+  .update(yourTable)
+  .set({ title: 'Updated' })
+  .where(eq(yourTable.id, id));
 ```
 
 ### Delete
 
 ```typescript
 await db
-  .delete(usersTable)
-  .where(eq(usersTable.email, 'john@example.com'));
+  .delete(yourTable)
+  .where(eq(yourTable.id, id));
 ```
 
 ## 🔄 Workflow
+
+### Fresh Database Setup
+
+For a new Neon project or empty database:
+
+```bash
+npm run db:migrate
+```
+
+This applies all migrations in `drizzle/` (0000 → 0001 → 0002). Migrations are idempotent where possible (e.g. `CREATE TABLE IF NOT EXISTS`).
 
 ### Development (Quick Changes)
 

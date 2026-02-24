@@ -5,20 +5,11 @@ description: Guidelines for database interactions using Drizzle ORM
 
 # Drizzle Database Integration
 
-This project uses **Drizzle ORM** for all database interactions with PostgreSQL.
+This project uses **Drizzle ORM** for all database interactions with PostgreSQL (Neon).
 
 ## Schema Location
 
-The database schema is defined in [src/db/schema.ts](mdc:flashy-cards/src/db/schema.ts) and includes:
-
-- **decksTable**: Stores flashcard decks created by users
-  - Links to Clerk user ID for authentication
-  - Contains title, description, and timestamps
-  
-- **cardsTable**: Stores individual flashcards within decks
-  - Has foreign key relationship to decksTable
-  - Contains front (question) and back (answer) fields
-  - Cascade delete when parent deck is deleted
+The database schema is defined in [src/db/schema.ts](mdc:src/db/schema.ts). Add your tables here when building your SaaS.
 
 ## Database Interaction Rules
 
@@ -26,7 +17,7 @@ The database schema is defined in [src/db/schema.ts](mdc:flashy-cards/src/db/sch
 
 1. **Import tables from schema**: Always import table definitions from `@/db/schema`
    ```typescript
-   import { decksTable, cardsTable } from "@/db/schema";
+   import { yourTable } from "@/db/schema";
    ```
 
 2. **Use Drizzle query syntax**: Never use raw SQL queries. Always use Drizzle's type-safe query builder
@@ -34,67 +25,44 @@ The database schema is defined in [src/db/schema.ts](mdc:flashy-cards/src/db/sch
    import { db } from "@/db";
    import { eq, and, desc } from "drizzle-orm";
    
-   // Example: Query decks for a user
-   const userDecks = await db
+   const items = await db
      .select()
-     .from(decksTable)
-     .where(eq(decksTable.userId, userId))
-     .orderBy(desc(decksTable.createdAt));
+     .from(yourTable)
+     .where(eq(yourTable.userId, userId))
+     .orderBy(desc(yourTable.createdAt));
    ```
 
-3. **Leverage relations**: Use the defined relations for joining tables
+3. **Leverage relations**: Define relations in your schema for joining tables
    ```typescript
-   // The schema defines relations that can be used for queries
-   import { decksRelations, cardsRelations } from "@/db/schema";
+   import { relations } from "drizzle-orm";
    ```
 
 ### Common Query Patterns
 
 **Select queries**:
 ```typescript
-// Get all decks for a user
-const decks = await db.select().from(decksTable).where(eq(decksTable.userId, userId));
-
-// Get a specific deck with cards
-const deck = await db.select().from(decksTable).where(eq(decksTable.id, deckId));
-const cards = await db.select().from(cardsTable).where(eq(cardsTable.deckId, deckId));
+const items = await db.select().from(yourTable).where(eq(yourTable.userId, userId));
 ```
 
 **Insert queries**:
 ```typescript
-// Insert a new deck
-const [newDeck] = await db.insert(decksTable).values({
-  userId: userId,
-  title: "My Deck",
+const [newItem] = await db.insert(yourTable).values({
+  userId,
+  title: "My Item",
   description: "Description here",
-}).returning();
-
-// Insert a new card
-const [newCard] = await db.insert(cardsTable).values({
-  deckId: deckId,
-  front: "Question",
-  back: "Answer",
 }).returning();
 ```
 
 **Update queries**:
 ```typescript
-// Update a deck
-await db.update(decksTable)
-  .set({ 
-    title: "Updated Title",
-    updatedAt: new Date(),
-  })
-  .where(eq(decksTable.id, deckId));
+await db.update(yourTable)
+  .set({ title: "Updated Title", updatedAt: new Date() })
+  .where(eq(yourTable.id, userId));
 ```
 
 **Delete queries**:
 ```typescript
-// Delete a deck (will cascade to cards)
-await db.delete(decksTable).where(eq(decksTable.id, deckId));
-
-// Delete a specific card
-await db.delete(cardsTable).where(eq(cardsTable.id, cardId));
+await db.delete(yourTable).where(eq(yourTable.id, id));
 ```
 
 ### Important Guidelines
@@ -112,5 +80,3 @@ The database connection instance should be imported from a centralized location:
 ```typescript
 import { db } from "@/db";
 ```
-
-If this file doesn't exist yet, it should be created to initialize the Drizzle client with the database connection.

@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+description: Spec-driven development rules for the marketing strategy builder
+---
+
+# Spec-Driven Development (Source of Truth)
+
+This repo is a SaaS base template (Clerk, Billing, Neon+Drizzle, OpenAI, shadcn/ui already set up).
+We build the new product strictly from JSON specs.
+
+## Source of Truth Files
+All product flow and output is defined by JSON specs stored in `/specs`.
+
+Rules:
+- Do NOT invent new questions, states, artifacts, or views.
+- Implement exactly what the specs say.
+- If a spec seems incomplete, create the minimal TODO comment in code instead of guessing.
+
+## Required Spec Architecture
+- Questions render from `phaseX.questions.json`
+- Phase logic runs from `phaseX.process.json` state machine
+- AI outputs validate against `phaseX.artifacts.json` schemas
+- UI views render from `phaseX.views.json`
+- Final dashboard renders from `final_dashboard.views.json`
+- Global UI rules come from `app.ui.json`
+- DB model must match `app.data_model.json`
+- PDF export must match `pdf_export.spec.json`
+
+## Refactor Safety
+- Keep existing infra intact (Clerk auth/billing, Neon+Drizzle, OpenAI, shadcn/ui, proxy/layout).
+- Do not re-implement auth/billing/db connections if already present.

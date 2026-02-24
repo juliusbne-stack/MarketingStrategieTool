@@ -1,0 +1,139 @@
+---
+alwaysApply: true
+description: Clerk billing integration for SaaS plans and features
+---
+
+# Clerk Billing Integration
+
+This project uses Clerk for authentication and billing. Use `has()` to check plan/feature access.
+
+## Common Use Cases
+
+### Resource Limit Enforcement
+
+When creating a resource, check if the user has unlimited access or is within the free limit.
+
+```typescript
+"use server"
+
+import { auth } from '@clerk/nextjs/server'
+import { db } from '@/db'
+import { resourcesTable } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+
+export async function createResource(input: CreateResourceInput) {
+  const { userId, has } = await auth()
+
+  if (!userId) {
+    throw new Error("Unauthorized")
+  }
+
+  const hasUnlimited = has({ feature: 'unlimited_resources' })
+
+  if (!hasUnlimited) {
+    const existing = await db
+      .select()
+      .from(resourcesTable)
+      .where(eq(resourcesTable.userId, userId))
+
+    if (existing.length >= 3) {
+      throw new Error("Limit reached. Upgrade to Pro for unlimited access.")
+    }
+  }
+
+  const [newResource] = await db
+    .insert(resourcesTable)
+    .values({ userId, ...input })
+    .returning()
+
+  return newResource
+}
+```
+
+### Conditional UI Elements
+
+Show upgrade prompts or hide features based on user's plan.
+
+```tsx
+import { auth } from '@clerk/nextjs/server'
+
+export default async function DashboardPage() {
+  const { userId, has } = await auth()
+
+  if (!userId) {
+    throw new Error("Unauthorized")
+  }
+
+  const hasProPlan = has({ plan: 'pro_plan' })
+  const hasPremiumFeature = has({ feature: 'premium_feature' })
+
+  return (
+    <div>
+      {!hasProPlan && (
+        <p>
+          <a href="/pricing">Upgrade to Pro</a> for more features.
+        </p>
+      )}
+
+      {!hasPremiumFeature && (
+        <div className="upgrade-banner">
+          <p>
+            Unlock premium features with Pro!{' '}
+            <a href="/pricing">Upgrade now</a>
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Protecting Server Actions
+
+```typescript
+"use server"
+
+import { auth } from '@clerk/nextjs/server'
+
+export async function premiumAction() {
+  const { userId, has } = await auth()
+
+  if (!userId) {
+    throw new Error("Unauthorized")
+  }
+
+  const hasPremium = has({ feature: 'premium_feature' })
+
+  if (!hasPremium) {
+    throw new Error("This feature requires Pro plan.")
+  }
+
+  // Proceed with action
+}
+```
+
+## Creating a Pricing Page
+
+Use the `<PricingTable />` component to display available plans.
+
+```tsx
+import { PricingTable } from '@clerk/nextjs'
+
+export default function PricingPage() {
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1rem' }}>
+      <h1>Choose Your Plan</h1>
+      <PricingTable />
+    </div>
+  )
+}
+```
+
+Plans are configured in the Clerk Dashboard.
+
+## Best Practices
+
+- **Plans**: `free_plan`, `pro_plan`
+- **Features**: Configure in Clerk Dashboard; check with `has({ feature: 'feature_name' })`
+- **Protection**: Use `has()` server-side; combine with authentication
+- **Best Practice**: Check features (not plans) when possible for flexibility

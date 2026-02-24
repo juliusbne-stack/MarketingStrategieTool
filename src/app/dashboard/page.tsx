@@ -1,80 +1,59 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { db } from "@/db";
-import { decksTable } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
-import { DeckCard } from "./deck-card";
-import { EmptyState } from "./empty-state";
-import { LoadingSkeleton } from "./loading-skeleton";
-
-async function UserDecks() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return null;
-  }
-
-  // Fetch user's decks from database
-  const decks = await db
-    .select()
-    .from(decksTable)
-    .where(eq(decksTable.userId, userId))
-    .orderBy(desc(decksTable.updatedAt));
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-foreground">Your Decks</h2>
-        {decks.length > 0 && (
-          <span className="text-sm text-muted-foreground">
-            {decks.length} {decks.length === 1 ? "deck" : "decks"}
-          </span>
-        )}
-      </div>
-
-      {decks.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {decks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              id={deck.id}
-              title={deck.title}
-              description={deck.description}
-              createdAt={deck.createdAt}
-              updatedAt={deck.updatedAt}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+import { Badge } from "@/components/ui/badge";
+import { Crown } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { listMyStrategyProjects } from "@/app/actions/strategy-project-actions";
+import { ProjectList } from "./project-list";
+import { CreateProjectForm } from "./create-project-form";
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
+  const { userId, has } = await auth();
 
   if (!userId) {
     redirect("/");
   }
 
+  const projects = await listMyStrategyProjects();
+  const hasProPlan = has({ plan: "pro_plan" });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            Dashboard
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">
+              Dashboard
+            </h1>
+            {hasProPlan && (
+              <Badge
+                variant="secondary"
+                className="bg-amber-500/20 text-amber-700 border-amber-500/50"
+              >
+                <Crown className="h-3 w-3 mr-1" />
+                Pro
+              </Badge>
+            )}
+          </div>
           <p className="text-muted-foreground mt-2">
-            Welcome to your flashcard dashboard
+            Verwalte deine Strategie-Projekte. Starte den Wizard für ein neues
+            Projekt oder öffne ein bestehendes.
           </p>
         </div>
 
-        <Suspense fallback={<LoadingSkeleton />}>
-          <UserDecks />
-        </Suspense>
+        <div className="space-y-6">
+          <CreateProjectForm />
+          <ProjectList projects={projects} />
+        </div>
+
+        <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
+          <p className="text-sm text-muted-foreground">
+            <Link href="/pricing" className="text-primary hover:underline">
+              View pricing
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

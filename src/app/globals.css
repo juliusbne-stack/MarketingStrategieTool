@@ -78,9 +78,52 @@
   --sidebar-accent-foreground: oklch(0.194 0.01 257.332);
   --sidebar-border: oklch(0.919 0.006 257.332);
   --sidebar-ring: oklch(0.697 0.017 257.332);
+  /* Porter Five Forces diagram colors (light mode) */
+  --porter-new-entrants: #f97316;
+  --porter-rivalry: #14b8a6;
+  --porter-supplier: #1e3a5f;
+  --porter-buyer: #22c55e;
+  --porter-substitutes: #8b5cf6;
+  --porter-center-fill: #1e3a5f;
+  --porter-center-stroke: #0f172a;
+  --porter-center-text: #ffffff;
+  --porter-edge: oklch(0.5 0.02 250);
+  /* Diagram background (light mode) */
+  --diagram-bg-grid: rgba(0, 0, 0, 0.06);
+  --diagram-bg-grid2: rgba(0, 0, 0, 0.04);
+  --diagram-bg-vignette: rgba(0, 0, 0, 0.02);
+  --pestel-center: oklch(0.5 0.02 250);
+  --pestel-orbital-stroke: oklch(0.6 0.02 250);
+  --pestel-edge-default: oklch(0.5 0.03 250);
+  --pestel-edge-active: oklch(0.4 0.06 250);
 }
 
 .dark {
+  /* PESTEL diagram semantic colors (outlines/glows on dark background) */
+  --pestel-technical: oklch(0.75 0.12 230);
+  --pestel-economic: oklch(0.72 0.18 145);
+  --pestel-political: oklch(0.78 0.15 55);
+  --pestel-sociocultural: oklch(0.72 0.18 300);
+  --pestel-ecological: oklch(0.72 0.12 185);
+  --pestel-legal: oklch(0.72 0.2 25);
+  --pestel-center: oklch(0.85 0.04 250);
+  --pestel-orbital-stroke: oklch(0.4 0.02 250);
+  --pestel-edge-default: oklch(0.5 0.03 250);
+  --pestel-edge-active: oklch(0.65 0.06 250);
+  /* Background context layer (radar grid) – subtle, enterprise-appropriate */
+  --diagram-bg-grid: rgba(255, 255, 255, 0.1);
+  --diagram-bg-grid2: rgba(255, 255, 255, 0.06);
+  --diagram-bg-vignette: rgba(255, 255, 255, 0.05);
+  /* Porter Five Forces (dark mode) */
+  --porter-new-entrants: #f97316;
+  --porter-rivalry: #2dd4bf;
+  --porter-supplier: #3b82f6;
+  --porter-buyer: #4ade80;
+  --porter-substitutes: #a78bfa;
+  --porter-center-fill: #1e3a5f;
+  --porter-center-stroke: #334155;
+  --porter-center-text: #ffffff;
+  --porter-edge: rgba(255, 255, 255, 0.25);
   --background: oklch(0.143 0.008 257.332);
   --foreground: oklch(0.983 0.003 257.332);
   --card: oklch(0.194 0.01 257.332);

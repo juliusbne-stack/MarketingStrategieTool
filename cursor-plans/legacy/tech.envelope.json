@@ -1,0 +1,24 @@
+{
+    "id": "tech-envelope",
+    "purpose": "Global technical constraints for implementing the wizard specs in this repo.",
+    "constraints": [
+      "Follow all .cursor/rules/*.mdc (alwaysApply rules are mandatory).",
+      "Reads must be done in Server Components only (no client-side DB fetching).",
+      "Writes/mutations must be implemented via Next.js Server Actions only (no API routes for mutations).",
+      "All Server Action inputs must be validated with Zod (never use FormData types as parameters).",
+      "All database access must be filtered by authenticated Clerk userId from await auth(). Never trust client-provided userId.",
+      "Clerk integration must use clerkMiddleware() in proxy.ts and ClerkProvider in app/layout.tsx (no deprecated patterns).",
+      "Use shadcn/ui components for UI. Avoid custom primitives when shadcn exists.",
+      "No raw SQL; use Drizzle query builder; schema lives in src/db/schema.ts (or repo’s existing schema path).",
+      "Never hardcode secrets; use env vars only."
+    ],
+    "execution_format": {
+      "after_each_task": [
+        "Summarize what changed",
+        "List modified files",
+        "How to verify"
+      ],
+      "stop_condition": "Stop when the plan's acceptance criteria are met and the project compiles."
+    }
+  }
+  

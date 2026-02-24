@@ -1,0 +1,227 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_1",
+      "phase_name": "Situationsanalyse"
+    },
+    "artifacts": [
+      {
+        "id": "strategy_profile",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "object",
+              "properties": {
+                "one_liner": { "type": "string", "maxLength": 180 },
+                "market_pressure": { "type": "string", "enum": ["low", "medium", "high"] },
+                "recommended_direction": { "type": "string", "maxLength": 240 }
+              },
+              "required": ["one_liner", "market_pressure", "recommended_direction"]
+            },
+            "inputs_echo": {
+              "type": "object",
+              "properties": {
+                "offer_scope": { "type": "string" },
+                "geo_market": { "type": "string" },
+                "offer_type": { "type": "string" },
+                "buyer_type": { "type": "string" },
+                "budget_band": { "type": "string", "enum": ["none", "low", "medium", "high", "unknown"] }
+              },
+              "required": ["offer_scope", "geo_market", "offer_type", "buyer_type", "budget_band"]
+            },
+            "market": {
+              "type": "object",
+              "properties": {
+                "stage": { "type": "string", "enum": ["emerging", "growing", "mature", "unknown"] },
+                "attractiveness": { "type": "string", "enum": ["low", "medium", "high"] },
+                "key_trends": { "type": "array", "items": { "type": "string" }, "maxItems": 6 }
+              },
+              "required": ["stage", "attractiveness", "key_trends"]
+            },
+            "target_group": {
+              "type": "object",
+              "properties": {
+                "primary_label": { "type": "string" },
+                "needs": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+                "buying_triggers": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+                "objections": { "type": "array", "items": { "type": "string" }, "maxItems": 6 }
+              },
+              "required": ["primary_label", "needs", "buying_triggers", "objections"]
+            },
+            "competition": {
+              "type": "object",
+              "properties": {
+                "intensity": { "type": "string", "enum": ["low", "medium", "high"] },
+                "competitor_names": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                "differentiation_levers": { "type": "array", "items": { "type": "string" }, "maxItems": 6 }
+              },
+              "required": ["intensity", "competitor_names", "differentiation_levers"]
+            },
+            "risks": { "type": "array", "items": { "type": "string" }, "maxItems": 8 },
+            "opportunities": { "type": "array", "items": { "type": "string" }, "maxItems": 8 }
+          },
+          "required": ["summary", "inputs_echo", "market", "target_group", "competition", "risks", "opportunities"]
+        }
+      },
+      {
+        "id": "pestel",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "dimensions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": { "type": "string", "enum": ["P", "E", "S", "T", "ECO", "L"] },
+                  "label": { "type": "string" },
+                  "impact": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "notes": { "type": "array", "items": { "type": "string" }, "maxItems": 4 }
+                },
+                "required": ["key", "label", "impact", "notes"]
+              },
+              "minItems": 6,
+              "maxItems": 6
+            }
+          },
+          "required": ["dimensions"]
+        }
+      },
+      {
+        "id": "porter_5_forces",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "forces": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": { "type": "string", "enum": ["rivalry", "new_entrants", "substitutes", "buyer_power", "supplier_power"] },
+                  "label": { "type": "string" },
+                  "pressure": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "insights": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+                },
+                "required": ["key", "label", "pressure", "insights"]
+              },
+              "minItems": 5,
+              "maxItems": 5
+            }
+          },
+          "required": ["forces"]
+        }
+      },
+      {
+        "id": "swot",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "strengths": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+            "weaknesses": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+            "opportunities": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+            "threats": { "type": "array", "items": { "type": "string" }, "maxItems": 6 }
+          },
+          "required": ["strengths", "weaknesses", "opportunities", "threats"]
+        }
+      },
+      {
+        "id": "strategic_group_map",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "axes": {
+              "type": "object",
+              "properties": {
+                "x": { "type": "string", "enum": ["price_level"] },
+                "y": { "type": "string", "enum": ["specialization"] }
+              },
+              "required": ["x", "y"]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "is_self": { "type": "boolean" },
+                  "price_level": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "specialization": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "brand_strength": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "group": { "type": "string" },
+                  "notes": { "type": "string", "maxLength": 180 }
+                },
+                "required": ["id", "name", "is_self", "price_level", "specialization", "brand_strength", "group", "notes"]
+              },
+              "minItems": 2,
+              "maxItems": 10
+            },
+            "positioning_space_hint": { "type": "string", "maxLength": 240 }
+          },
+          "required": ["axes", "points", "positioning_space_hint"]
+        }
+      },
+      {
+        "id": "market_segmentation",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "segments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "who": { "type": "string" },
+                  "need": { "type": "string" },
+                  "attractiveness": { "type": "string", "enum": ["low", "medium", "high"] }
+                },
+                "required": ["name", "who", "need", "attractiveness"]
+              },
+              "maxItems": 6
+            }
+          },
+          "required": ["segments"]
+        }
+      },
+      {
+        "id": "target_profiles",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "profiles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "type": { "type": "string", "enum": ["persona", "sinus_like_profile"] },
+                  "summary": { "type": "string", "maxLength": 280 },
+                  "channels_hint": { "type": "array", "items": { "type": "string" }, "maxItems": 5 }
+                },
+                "required": ["name", "type", "summary", "channels_hint"]
+              },
+              "maxItems": 4
+            }
+          },
+          "required": ["profiles"]
+        }
+      }
+    ]
+  }
+  

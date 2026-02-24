@@ -1,0 +1,186 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_3",
+      "phase_name": "Strategieumsetzung (Positionierung & Marke)"
+    },
+    "artifacts": [
+      {
+        "id": "positioning_brand_variants",
+        "versioned": false,
+        "locked_on_phase_lock": false,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "variants": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "variant_id": { "type": "string", "enum": ["option_a", "option_b"] },
+                  "label": { "type": "string", "maxLength": 40 },
+                  "competitive_strategy": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "enum": ["cost", "differentiation", "focus", "hybrid"] },
+                      "rationale": { "type": "string", "maxLength": 220 },
+                      "tradeoffs": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+                    },
+                    "required": ["type", "rationale", "tradeoffs"]
+                  },
+                  "positioning": {
+                    "type": "object",
+                    "properties": {
+                      "statement": { "type": "string", "maxLength": 180 },
+                      "market_role": { "type": "string", "maxLength": 80 },
+                      "differentiation": { "type": "string", "maxLength": 180 },
+                      "canvas": {
+                        "type": "object",
+                        "properties": {
+                          "target": { "type": "string", "maxLength": 120 },
+                          "problem": { "type": "string", "maxLength": 140 },
+                          "outcome": { "type": "string", "maxLength": 140 },
+                          "approach": { "type": "string", "maxLength": 160 },
+                          "proof": { "type": "string", "maxLength": 140 }
+                        },
+                        "required": ["target", "problem", "outcome", "approach", "proof"]
+                      }
+                    },
+                    "required": ["statement", "market_role", "differentiation", "canvas"]
+                  },
+                  "brand": {
+                    "type": "object",
+                    "properties": {
+                      "promise": { "type": "string", "maxLength": 160 },
+                      "values": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                      "personality": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                      "voice": {
+                        "type": "object",
+                        "properties": {
+                          "tone": { "type": "string", "maxLength": 80 },
+                          "style_rules": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                          "do": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                          "dont": { "type": "array", "items": { "type": "string" }, "maxItems": 4 }
+                        },
+                        "required": ["tone", "style_rules", "do", "dont"]
+                      },
+                      "prism": {
+                        "type": "object",
+                        "properties": {
+                          "physique": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "personality": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "culture": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "relationship": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "reflection": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "self_image": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+                        },
+                        "required": ["physique", "personality", "culture", "relationship", "reflection", "self_image"]
+                      },
+                      "brand_wheel": {
+                        "type": "object",
+                        "properties": {
+                          "attributes": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                          "benefits": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                          "values": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                          "essence": { "type": "string", "maxLength": 60 }
+                        },
+                        "required": ["attributes", "benefits", "values", "essence"]
+                      }
+                    },
+                    "required": ["promise", "values", "personality", "voice", "prism", "brand_wheel"]
+                  }
+                },
+                "required": ["variant_id", "label", "competitive_strategy", "positioning", "brand"]
+              }
+            }
+          },
+          "required": ["variants"]
+        }
+      },
+      {
+        "id": "positioning_and_brand_core",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "selected_variant_id": { "type": "string", "enum": ["option_a", "option_b"] },
+            "competitive_strategy": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["cost", "differentiation", "focus", "hybrid"] },
+                "rationale": { "type": "string", "maxLength": 220 },
+                "tradeoffs": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+              },
+              "required": ["type", "rationale", "tradeoffs"]
+            },
+            "positioning": {
+              "type": "object",
+              "properties": {
+                "statement": { "type": "string", "maxLength": 180 },
+                "market_role": { "type": "string", "maxLength": 80 },
+                "differentiation": { "type": "string", "maxLength": 180 },
+                "canvas": {
+                  "type": "object",
+                  "properties": {
+                    "target": { "type": "string", "maxLength": 120 },
+                    "problem": { "type": "string", "maxLength": 140 },
+                    "outcome": { "type": "string", "maxLength": 140 },
+                    "approach": { "type": "string", "maxLength": 160 },
+                    "proof": { "type": "string", "maxLength": 140 }
+                  },
+                  "required": ["target", "problem", "outcome", "approach", "proof"]
+                }
+              },
+              "required": ["statement", "market_role", "differentiation", "canvas"]
+            },
+            "brand": {
+              "type": "object",
+              "properties": {
+                "promise": { "type": "string", "maxLength": 160 },
+                "values": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                "personality": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                "voice": {
+                  "type": "object",
+                  "properties": {
+                    "tone": { "type": "string", "maxLength": 80 },
+                    "style_rules": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                    "do": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                    "dont": { "type": "array", "items": { "type": "string" }, "maxItems": 4 }
+                  },
+                  "required": ["tone", "style_rules", "do", "dont"]
+                },
+                "prism": {
+                  "type": "object",
+                  "properties": {
+                    "physique": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "personality": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "culture": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "relationship": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "reflection": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "self_image": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+                  },
+                  "required": ["physique", "personality", "culture", "relationship", "reflection", "self_image"]
+                },
+                "brand_wheel": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                    "benefits": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                    "values": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                    "essence": { "type": "string", "maxLength": 60 }
+                  },
+                  "required": ["attributes", "benefits", "values", "essence"]
+                }
+              },
+              "required": ["promise", "values", "personality", "voice", "prism", "brand_wheel"]
+            }
+          },
+          "required": ["selected_variant_id", "competitive_strategy", "positioning", "brand"]
+        }
+      }
+    ]
+  }
+  

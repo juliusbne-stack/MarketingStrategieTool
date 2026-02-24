@@ -1,0 +1,164 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_5",
+      "phase_name": "Content & Umsetzung",
+      "wizard_layout": true,
+      "max_iterations": 3,
+      "content_generation_mode": "briefings_only_buttons"
+    },
+    "state_machine": {
+      "start_state": "p5_generate_draft",
+      "states": [
+        {
+          "id": "p5_generate_draft",
+          "type": "ai_action",
+          "action": "generate_phase5_draft_content_plan",
+          "inputs": [
+            "artifacts.marketing_plan",
+            "artifacts.positioning_and_brand_core",
+            "artifacts.strategic_guidelines",
+            "artifacts.strategy_profile"
+          ],
+          "outputs": ["content_plan_draft"],
+          "on_complete": "p5_present_draft"
+        },
+        {
+          "id": "p5_present_draft",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "artifact_ref": "content_plan_draft",
+          "primary_views": [
+            "pillars_cards",
+            "editorial_board_4w",
+            "briefings_list"
+          ],
+          "on_complete": "p5_collect_inputs"
+        },
+        {
+          "id": "p5_collect_inputs",
+          "type": "form_wizard",
+          "question_refs": [
+            "p5_start_focus",
+            "p5_channel_activation",
+            "p5_content_depth",
+            "p5_personal_visibility_in_content",
+            "p5_formats",
+            "p5_frequency",
+            "p5_content_primary_goal",
+            "p5_work_mode",
+            "p5_planning_horizon"
+          ],
+          "step_rules": {
+            "max_questions_per_step": 2,
+            "show_progress": true,
+            "allow_back": true,
+            "autosave": true
+          },
+          "on_complete": "p5_generate_final"
+        },
+        {
+          "id": "p5_generate_final",
+          "type": "ai_action",
+          "action": "generate_phase5_final_content_plan_and_briefings",
+          "inputs": [
+            "content_plan_draft",
+            "answers.phase_5",
+            "artifacts.marketing_plan",
+            "artifacts.positioning_and_brand_core"
+          ],
+          "outputs": ["content_plan"],
+          "on_complete": "p5_results_dashboard"
+        },
+        {
+          "id": "p5_results_dashboard",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "artifact_ref": "content_plan",
+          "primary_views": [
+            "pillars_cards",
+            "editorial_board_4w",
+            "briefings_list"
+          ],
+          "on_complete": "p5_feasibility_gate"
+        },
+        {
+          "id": "p5_feasibility_gate",
+          "type": "approval_gate",
+          "question": "Fühlt sich dieser Content- & Maßnahmenansatz für dich realistisch umsetzbar an?",
+          "options": [
+            { "id": "approve", "label": "Ja, passt" },
+            { "id": "adjust", "label": "Mit Anpassungen" },
+            { "id": "simplify", "label": "Nein, bitte vereinfachen" }
+          ],
+          "max_iterations": 3,
+          "on_approve": "p5_lock_phase",
+          "on_adjust": "p5_adjust_intake",
+          "on_simplify": "p5_simplify_plan",
+          "on_max_iterations_reached": "p5_force_minimal_lock"
+        },
+        {
+          "id": "p5_adjust_intake",
+          "type": "form",
+          "fields": [
+            {
+              "id": "p5_adjust_area",
+              "type": "multi_choice",
+              "label": "Was soll angepasst werden?",
+              "options": [
+                { "id": "channels", "label": "Kanäle" },
+                { "id": "frequency", "label": "Frequenz" },
+                { "id": "formats", "label": "Formate" },
+                { "id": "pillars", "label": "Content-Säulen" },
+                { "id": "editorial", "label": "Redaktionsplan" },
+                { "id": "briefings", "label": "Briefings" },
+                { "id": "other", "label": "Etwas anderes" }
+              ],
+              "required": true,
+              "constraints": { "max_selected": 2 }
+            },
+            {
+              "id": "p5_adjust_notes",
+              "type": "short_text",
+              "label": "Was soll ich ändern?",
+              "required": true,
+              "validation": { "min_chars": 8, "max_chars": 280 }
+            }
+          ],
+          "on_complete": "p5_regenerate_final"
+        },
+        {
+          "id": "p5_regenerate_final",
+          "type": "ai_action",
+          "action": "regenerate_phase5_content_plan_and_briefings",
+          "inputs": ["content_plan", "answers.phase_5", "answers.phase_5_adjustments"],
+          "outputs": ["content_plan"],
+          "on_complete": "p5_results_dashboard"
+        },
+        {
+          "id": "p5_simplify_plan",
+          "type": "ai_action",
+          "action": "simplify_phase5_content_plan",
+          "inputs": ["content_plan", "answers.phase_5"],
+          "outputs": ["content_plan"],
+          "on_complete": "p5_results_dashboard"
+        },
+        {
+          "id": "p5_force_minimal_lock",
+          "type": "ai_action",
+          "action": "force_minimal_phase5_content_plan",
+          "inputs": ["content_plan"],
+          "outputs": ["content_plan"],
+          "on_complete": "p5_lock_phase"
+        },
+        {
+          "id": "p5_lock_phase",
+          "type": "lock_phase",
+          "locks": ["content_plan"],
+          "versioning": { "mode": "increment", "format": "v{n}" },
+          "on_complete": "final_dashboard_start"
+        }
+      ]
+    }
+  }
+  

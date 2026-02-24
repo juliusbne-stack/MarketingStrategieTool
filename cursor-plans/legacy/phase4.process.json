@@ -1,0 +1,166 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_4",
+      "phase_name": "Operationalisierung (Marketing-Mix & Maßnahmen)",
+      "wizard_layout": true,
+      "max_iterations": 3
+    },
+    "state_machine": {
+      "start_state": "p4_generate_draft",
+      "states": [
+        {
+          "id": "p4_generate_draft",
+          "type": "ai_action",
+          "action": "generate_phase4_draft_plan",
+          "inputs": [
+            "artifacts.strategy_profile",
+            "artifacts.strategic_guidelines",
+            "artifacts.positioning_and_brand_core"
+          ],
+          "outputs": ["marketing_plan_draft"],
+          "on_complete": "p4_present_draft"
+        },
+        {
+          "id": "p4_present_draft",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "primary_views": [
+            "mix_radar",
+            "channels_stack",
+            "measures_kanban"
+          ],
+          "artifact_ref": "marketing_plan_draft",
+          "on_complete": "p4_collect_inputs"
+        },
+        {
+          "id": "p4_collect_inputs",
+          "type": "form_wizard",
+          "question_refs": [
+            "p4_marketing_approach_fit",
+            "p4_channel_count",
+            "p4_execution_owner",
+            "p4_time_per_week",
+            "p4_short_term_priority",
+            "p4_paid_ads",
+            "p4_complexity_level"
+          ],
+          "step_rules": {
+            "max_questions_per_step": 2,
+            "show_progress": true,
+            "allow_back": true,
+            "autosave": true
+          },
+          "on_complete": "p4_generate_final_plan"
+        },
+        {
+          "id": "p4_generate_final_plan",
+          "type": "ai_action",
+          "action": "generate_phase4_final_marketing_plan",
+          "inputs": [
+            "artifacts.strategy_profile",
+            "artifacts.strategic_guidelines",
+            "artifacts.positioning_and_brand_core",
+            "marketing_plan_draft",
+            "answers.phase_4"
+          ],
+          "outputs": ["marketing_plan"],
+          "on_complete": "p4_results_dashboard"
+        },
+        {
+          "id": "p4_results_dashboard",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "primary_views": [
+            "mix_radar",
+            "mix_cards",
+            "channels_stack",
+            "measures_kanban",
+            "constraints_card"
+          ],
+          "artifact_ref": "marketing_plan",
+          "on_complete": "p4_feasibility_gate"
+        },
+        {
+          "id": "p4_feasibility_gate",
+          "type": "approval_gate",
+          "question": "Fühlt sich dieser Marketing-Plan für dich realistisch umsetzbar an?",
+          "options": [
+            { "id": "approve", "label": "Ja, absolut" },
+            { "id": "adjust", "label": "Mit Anpassungen" },
+            { "id": "simplify", "label": "Nein, bitte vereinfachen" }
+          ],
+          "max_iterations": 3,
+          "on_approve": "p4_lock_phase",
+          "on_adjust": "p4_adjust_intake",
+          "on_simplify": "p4_simplify_plan",
+          "on_max_iterations_reached": "p4_force_minimal_lock"
+        },
+        {
+          "id": "p4_adjust_intake",
+          "type": "form",
+          "fields": [
+            {
+              "id": "p4_adjust_area",
+              "type": "multi_choice",
+              "label": "Was ist aktuell zu viel oder passt nicht?",
+              "options": [
+                { "id": "channels", "label": "Zu viele Kanäle" },
+                { "id": "measures", "label": "Zu viele Maßnahmen" },
+                { "id": "time", "label": "Zu hoher Zeitaufwand" },
+                { "id": "complexity", "label": "Zu komplex" },
+                { "id": "priority", "label": "Falsche Priorität" },
+                { "id": "other", "label": "Etwas anderes" }
+              ],
+              "required": true,
+              "constraints": { "max_selected": 2 }
+            },
+            {
+              "id": "p4_adjust_notes",
+              "type": "short_text",
+              "label": "Was soll ich ändern?",
+              "required": true,
+              "validation": { "min_chars": 8, "max_chars": 260 }
+            }
+          ],
+          "on_complete": "p4_regenerate_final_plan"
+        },
+        {
+          "id": "p4_regenerate_final_plan",
+          "type": "ai_action",
+          "action": "regenerate_phase4_final_marketing_plan",
+          "inputs": [
+            "marketing_plan",
+            "answers.phase_4",
+            "answers.phase_4_adjustments"
+          ],
+          "outputs": ["marketing_plan"],
+          "on_complete": "p4_results_dashboard"
+        },
+        {
+          "id": "p4_simplify_plan",
+          "type": "ai_action",
+          "action": "simplify_phase4_plan",
+          "inputs": ["marketing_plan", "answers.phase_4"],
+          "outputs": ["marketing_plan"],
+          "on_complete": "p4_results_dashboard"
+        },
+        {
+          "id": "p4_force_minimal_lock",
+          "type": "ai_action",
+          "action": "force_minimal_phase4_plan",
+          "inputs": ["marketing_plan"],
+          "outputs": ["marketing_plan"],
+          "on_complete": "p4_lock_phase"
+        },
+        {
+          "id": "p4_lock_phase",
+          "type": "lock_phase",
+          "locks": ["marketing_plan"],
+          "versioning": { "mode": "increment", "format": "v{n}" },
+          "on_complete": "phase_5_start"
+        }
+      ]
+    }
+  }
+  

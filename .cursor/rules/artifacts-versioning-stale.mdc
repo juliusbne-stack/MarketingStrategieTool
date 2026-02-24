@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+description: Artifact versioning, locking, edit mode and downstream stale invalidation
+---
+
+# Artifacts: Versioning + Locking + Stale Rules
+
+Artifacts are phase outputs and must be versioned/locked exactly as specified.
+
+## Locking & Versioning
+- Draft artifacts: `status=draft`
+- Locked artifacts: `status=locked` and version increments `v{n}`
+- Lock happens only via `lock_phase` / `lock_variant` process states.
+
+## Edit Mode
+From the final dashboard, each section has an Edit button:
+- Clicking Edit starts a NEW `phase_run` for that phase (run_number + 1).
+- Prefill answers from the latest answer_set for that phase.
+- Mark downstream phases (X+1..5) as stale/draft (do not silently keep them as if valid).
+- UI must show a "stale" warning and a CTA to regenerate downstream phases.
+
+## Do Not
+- Do not overwrite locked artifact payloads in place.
+- Do not reuse previous phase_run IDs for edits.

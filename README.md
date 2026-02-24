@@ -1,28 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SaaS Template
+
+A clean Next.js foundation for building SaaS products with:
+
+- **Clerk** – Authentication and billing
+- **Neon** – PostgreSQL database
+- **Drizzle ORM** – Type-safe database access
+- **OpenAI** – AI SDK integration
+- **shadcn/ui** – UI components
 
 ## Getting Started
 
-### 1. Set Up Authentication
+### 1. Environment Variables
 
-This project uses [Clerk](https://clerk.com/) for authentication. Follow these steps:
-
-1. **Create a Clerk account** at [https://clerk.com](https://clerk.com)
-2. **Create a new application** in the Clerk Dashboard
-3. **Copy your API keys** from the [API Keys page](https://dashboard.clerk.com/last-active?path=api-keys)
-4. **Create a `.env.local` file** in the root directory:
+Create `.env.local` with:
 
 ```bash
-cp .env.local.example .env.local
+# Clerk (required)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Database - Neon (required for DB features)
+DATABASE_URL=postgresql://...
+
+# OpenAI (required for AI features)
+OPENAI_API_KEY=sk-...
 ```
-
-5. **Add your Clerk keys** to `.env.local`:
-
-```bash
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
-CLERK_SECRET_KEY=sk_test_your_key_here
-```
-
-⚠️ **Important**: Never commit `.env.local` to git. It's already in `.gitignore`.
 
 ### 2. Install Dependencies
 
@@ -30,37 +32,57 @@ CLERK_SECRET_KEY=sk_test_your_key_here
 npm install
 ```
 
-### 3. Run the Development Server
+### 3. Database Setup
 
-First, run the development server:
+```bash
+# Push schema to database (development)
+npm run db:push
+
+# Or run migrations
+npm run db:migrate
+
+# Test connection
+npm run db:example
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── actions/       # Server actions (e.g. ai-actions.ts)
+│   ├── dashboard/     # Protected dashboard
+│   ├── pricing/       # Clerk pricing table
+│   └── page.tsx       # Landing page
+├── components/ui/     # shadcn components
+├── db/
+│   ├── index.ts       # Database connection
+│   ├── schema.ts      # Add your tables here
+│   └── example.ts     # Connection test
+└── lib/
+```
 
-## Learn More
+## Commands
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` – Start dev server
+- `npm run build` – Production build
+- `npm run db:push` – Push schema to DB
+- `npm run db:generate` – Generate migrations
+- `npm run db:migrate` – Run migrations
+- `npm run db:studio` – Open Drizzle Studio
+- `npm run db:example` – Test DB connection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Next Steps
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Add your tables to `src/db/schema.ts`
+2. Create server actions in `src/app/actions/`
+3. Build your features in the dashboard
+4. Configure plans and features in Clerk Dashboard

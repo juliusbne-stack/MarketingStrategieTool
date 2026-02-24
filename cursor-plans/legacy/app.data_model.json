@@ -1,0 +1,180 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "language": "de",
+      "db": {
+        "provider": "neon_postgres",
+        "orm": "drizzle"
+      }
+    },
+    "entities": {
+      "workspace": {
+        "description": "Top-Level Container (z.B. Firma/Team).",
+        "fields": {
+          "id": "uuid",
+          "name": "string",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "indexes": ["id"]
+      },
+      "user": {
+        "description": "Auth via Clerk, User-Record für App-spezifische Settings.",
+        "fields": {
+          "id": "uuid",
+          "clerk_user_id": "string",
+          "workspace_id": "uuid",
+          "display_name": "string",
+          "email": "string",
+          "language": "string",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "indexes": ["id", "clerk_user_id", "workspace_id"]
+      },
+      "project": {
+        "description": "Eine Strategie-Erstellung (Wizard + Dashboard).",
+        "fields": {
+          "id": "uuid",
+          "workspace_id": "uuid",
+          "owner_user_id": "uuid",
+          "title": "string",
+          "status": "string",
+          "current_phase_id": "string",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "enums": {
+          "status": ["draft", "in_progress", "completed", "archived"],
+          "current_phase_id": ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]
+        },
+        "indexes": ["id", "workspace_id", "owner_user_id", "status"]
+      },
+      "phase_run": {
+        "description": "Ein Durchlauf einer Phase inklusive Locking/Versioning.",
+        "fields": {
+          "id": "uuid",
+          "project_id": "uuid",
+          "phase_id": "string",
+          "run_number": "int",
+          "status": "string",
+          "locked_at": "timestamp|null",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "enums": {
+          "phase_id": ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"],
+          "status": ["open", "locked"]
+        },
+        "indexes": ["id", "project_id", "phase_id", "run_number"]
+      },
+      "answer_set": {
+        "description": "Gespeicherte Antworten pro Phase (Wizard autosave).",
+        "fields": {
+          "id": "uuid",
+          "project_id": "uuid",
+          "phase_id": "string",
+          "run_id": "uuid",
+          "answers_json": "jsonb",
+          "is_latest": "boolean",
+          "created_at": "timestamp"
+        },
+        "enums": {
+          "phase_id": ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]
+        },
+        "indexes": ["id", "project_id", "phase_id", "run_id", "is_latest"]
+      },
+      "artifact": {
+        "description": "Ergebnisse einer Phase (versioniert).",
+        "fields": {
+          "id": "uuid",
+          "project_id": "uuid",
+          "phase_id": "string",
+          "run_id": "uuid",
+          "artifact_id": "string",
+          "version": "string",
+          "payload_json": "jsonb",
+          "status": "string",
+          "created_at": "timestamp"
+        },
+        "enums": {
+          "phase_id": ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"],
+          "status": ["draft", "locked"]
+        },
+        "indexes": ["id", "project_id", "phase_id", "artifact_id", "version", "run_id", "status"]
+      },
+      "generated_asset": {
+        "description": "On-demand generierte Inhalte aus Briefings (Buttons).",
+        "fields": {
+          "id": "uuid",
+          "project_id": "uuid",
+          "source_briefing_id": "string",
+          "asset_type": "string",
+          "payload_json": "jsonb",
+          "created_at": "timestamp"
+        },
+        "enums": {
+          "asset_type": ["post_draft", "video_script", "outline", "hooks"]
+        },
+        "indexes": ["id", "project_id", "source_briefing_id", "asset_type"]
+      },
+      "pdf_export_job": {
+        "description": "PDF Export-Job (asynchron), erzeugt Download-Link.",
+        "fields": {
+          "id": "uuid",
+          "project_id": "uuid",
+          "status": "string",
+          "file_url": "string|null",
+          "error": "string|null",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "enums": {
+          "status": ["queued", "running", "done", "failed"]
+        },
+        "indexes": ["id", "project_id", "status"]
+      }
+    },
+    "relationships": [
+      { "from": "workspace.id", "to": "user.workspace_id", "type": "one_to_many" },
+      { "from": "workspace.id", "to": "project.workspace_id", "type": "one_to_many" },
+      { "from": "project.id", "to": "phase_run.project_id", "type": "one_to_many" },
+      { "from": "phase_run.id", "to": "answer_set.run_id", "type": "one_to_many" },
+      { "from": "phase_run.id", "to": "artifact.run_id", "type": "one_to_many" },
+      { "from": "project.id", "to": "generated_asset.project_id", "type": "one_to_many" },
+      { "from": "project.id", "to": "pdf_export_job.project_id", "type": "one_to_many" }
+    ],
+    "persistence_rules": {
+      "answers": {
+        "autosave_on_change": true,
+        "store_as": "answer_set.answers_json",
+        "latest_flag": "answer_set.is_latest=true per project_id+phase_id",
+        "when_user_edits_previous_phase": "create_new_phase_run_for_that_phase_and_invalidate_downstream_locks"
+      },
+      "artifacts": {
+        "draft_then_lock": true,
+        "lock_creates_new_version": true,
+        "version_format": "v{n}",
+        "locked_artifacts_used_as_source_of_truth": true
+      }
+    },
+    "downstream_invalidation": {
+      "rule": "Wenn Phase X neu gelockt wird, setze Phase (X+1..5) runs auf open/draft und markiere deren artifacts als stale.",
+      "implementation_hint": {
+        "stale_flag": "optional in artifact.payload_json.meta.stale=true",
+        "ui_behavior": "Dashboard zeigt Hinweis + CTA „Neu generieren“"
+      }
+    },
+    "ai_actions_contract": {
+      "input_sources_priority": [
+        "latest_locked_artifacts",
+        "latest_answers",
+        "draft_artifacts_if_present"
+      ],
+      "output_storage": {
+        "draft_outputs": "artifact.status=draft",
+        "locked_outputs": "artifact.status=locked + increment version"
+      }
+    }
+  }
+  

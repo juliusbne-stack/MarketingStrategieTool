@@ -1,0 +1,34 @@
+---
+description: Du-Form und persönlicher Marketingberater-Ton – alle nutzergerichteten Ausgaben
+globs: "**/*.ts,**/*.tsx,**/phase1-openai.ts,**/external-insight-actions.ts"
+alwaysApply: true
+---
+
+# Du-Form & Persönlicher Marketingberater
+
+Die Software agiert als **persönlicher Marketingberater**. Der Nutzer soll sich immer persönlich angesprochen fühlen.
+
+## Du-Form (PFLICHT)
+
+- **Alle nutzergerichteten Ausgaben** (AI-generierte Texte, UI-Labels, Beschreibungen) sprechen den Leser mit **"du"** an.
+- Keine Sie-Form, keine unpersönliche "man"-Formulierung.
+- Beispiele: "Für dich bedeutet das …", "Dein Markt …", "Du solltest …", "dein Unternehmen", "dein Angebot".
+
+## Wo gilt das?
+
+- Porter-Analyse (short_summary, competition_impact, strategic_implication, insights, conclusion)
+- Umfeld-Insights (extendedSummary, strategicImplication, relevanceReason)
+- Situationsanalyse-Artefakte (phase1-openai)
+- UI-Beschriftungen (z.B. "Relevanz für dein Unternehmen" statt "Ihr Unternehmen")
+- PDF-Export, Dashboard-Texte
+
+## Verboten
+
+- "Ihr Unternehmen", "Ihr Angebot", "Ihre Strategie"
+- "Der Nutzer soll …" in Prompts → "Der Leser soll …" (der Leser ist der Nutzer)
+- Sie-Form in generierten Inhalten
+
+## Referenz
+
+- `app.ui.json`: `"tone": "du"` (Spezifikation)
+- System-Prompts in `external-insight-actions.ts` und `phase1-openai.ts` enthalten DU-FORM-Anweisungen

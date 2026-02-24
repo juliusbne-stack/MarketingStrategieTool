@@ -1,0 +1,145 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_1",
+      "phase_name": "Situationsanalyse",
+      "wizard_layout": true,
+      "max_iterations": 3
+    },
+    "state_machine": {
+      "start_state": "p1_collect_inputs",
+      "states": [
+        {
+          "id": "p1_collect_inputs",
+          "type": "form_wizard",
+          "question_refs": [
+            "p1_scope_offer",
+            "p1_geo_market",
+            "p1_offer_type",
+            "p1_problem_solved",
+            "p1_buyer_type",
+            "p1_customer_traits",
+            "p1_why_buy",
+            "p1_marketing_budget",
+            "p1_competitors_known",
+            "p1_competitor_names",
+            "p1_constraints"
+          ],
+          "step_rules": {
+            "max_questions_per_step": 2,
+            "show_progress": true,
+            "allow_back": true,
+            "autosave": true
+          },
+          "steps": [
+            { "title": "Dein Angebot", "question_ids": ["p1_scope_offer"] },
+            { "title": "Markt & Geschäftsmodell", "question_ids": ["p1_geo_market", "p1_offer_type"] },
+            { "title": "Wertversprechen", "question_ids": ["p1_problem_solved"] },
+            { "title": "Käufer & Entscheidungsstruktur", "question_ids": ["p1_buyer_type"] },
+            { "title": "Kundenprofil", "question_ids": ["p1_customer_traits"] },
+            { "title": "Kaufmotivation", "question_ids": ["p1_why_buy"] },
+            { "title": "Marketing-Budget", "question_ids": ["p1_marketing_budget"] },
+            { "title": "Wettbewerb", "question_ids": ["p1_competitors_known", "p1_competitor_names"] },
+            { "title": "Strategische Rahmenbedingungen", "question_ids": ["p1_constraints"] }
+          ],
+          "on_complete": "p1_generate_results"
+        },
+        {
+          "id": "p1_generate_results",
+          "type": "ai_action",
+          "action": "generate_phase1_artifacts",
+          "inputs": ["answers.phase_1"],
+          "outputs": [
+            "strategy_profile",
+            "pestel",
+            "porter_5_forces",
+            "market_segmentation",
+            "target_profiles",
+            "swot",
+            "strategic_group_map"
+          ],
+          "on_complete": "p1_results_dashboard"
+        },
+        {
+          "id": "p1_results_dashboard",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "primary_views": [
+            "strategy_profile_hero",
+            "pestel_radar",
+            "porter_bars",
+            "swot_grid",
+            "group_map_scatter"
+          ],
+          "secondary_views": [
+            "segmentation_cards",
+            "target_profile_cards"
+          ],
+          "on_complete": "p1_approval_gate"
+        },
+        {
+          "id": "p1_approval_gate",
+          "type": "approval_gate",
+          "question": "Bist du mit den Ergebnissen der Situationsanalyse zufrieden?",
+          "options": [
+            { "id": "approve", "label": "Ja" },
+            { "id": "adjust", "label": "Nein, ich möchte etwas ändern" }
+          ],
+          "max_iterations": 3,
+          "on_approve": "p1_lock",
+          "on_adjust": "p1_adjust_intake",
+          "on_max_iterations_reached": "p1_force_minimal_lock"
+        },
+        {
+          "id": "p1_adjust_intake",
+          "type": "form",
+          "fields": [
+            {
+              "id": "p1_adjust_area",
+              "type": "multi_choice",
+              "label": "Welcher Teil passt noch nicht?",
+              "options": [
+                { "id": "target_group", "label": "Zielgruppe" },
+                { "id": "competition", "label": "Wettbewerb" },
+                { "id": "market", "label": "Markt/Umfeld" },
+                { "id": "positioning_space", "label": "Positionierungsraum" },
+                { "id": "other", "label": "Etwas anderes" }
+              ],
+              "required": true,
+              "constraints": { "max_selected": 2 }
+            },
+            {
+              "id": "p1_adjust_notes",
+              "type": "short_text",
+              "label": "Was soll ich optimieren?",
+              "required": true,
+              "validation": { "min_chars": 8, "max_chars": 240 }
+            }
+          ],
+          "on_complete": "p1_regenerate_results"
+        },
+        {
+          "id": "p1_regenerate_results",
+          "type": "ai_action",
+          "action": "regenerate_phase1_artifacts",
+          "inputs": ["answers.phase_1", "answers.phase_1_adjustments"],
+          "outputs": ["strategy_profile", "pestel", "porter_5_forces", "market_segmentation", "target_profiles", "swot", "strategic_group_map"],
+          "on_complete": "p1_results_dashboard"
+        },
+        {
+          "id": "p1_force_minimal_lock",
+          "type": "ai_action",
+          "action": "simplify_phase1_artifacts_to_minimal_viable",
+          "on_complete": "p1_lock"
+        },
+        {
+          "id": "p1_lock",
+          "type": "lock_phase",
+          "locks": ["strategy_profile", "pestel", "porter_5_forces", "market_segmentation", "target_profiles", "swot", "strategic_group_map"],
+          "versioning": { "mode": "increment", "format": "v{n}" },
+          "on_complete": "phase_2_start"
+        }
+      ]
+    }
+  }
+  

@@ -1,0 +1,131 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "language": "de",
+      "export_type": "pdf",
+      "design_style": "bold_high_contrast"
+    },
+    "pdf_settings": {
+      "page_size": "A4",
+      "margins_mm": { "top": 14, "right": 14, "bottom": 14, "left": 14 },
+      "typography": {
+        "font_family": "Inter",
+        "h1_size": 22,
+        "h2_size": 16,
+        "body_size": 11,
+        "line_height": 1.35
+      }
+    },
+    "rendering": {
+      "charts": {
+        "preferred": "svg_export_if_supported_else_image",
+        "fallback": "image",
+        "image_dpi": 200,
+        "max_chart_height_mm": 70
+      },
+      "ui_cards": {
+        "style": "flat_high_contrast",
+        "border": "strong",
+        "radius": "md"
+      }
+    },
+    "document_structure": [
+      {
+        "id": "cover",
+        "title": "Marketing-Strategie",
+        "includes": [
+          { "type": "text", "from": "project.title", "label": "Projekt" },
+          { "type": "date", "from": "export.created_at", "label": "Exportdatum" }
+        ]
+      },
+      {
+        "id": "exec_summary",
+        "title": "Strategie in 60 Sekunden",
+        "includes": [
+          { "type": "hero", "artifact_id": "strategy_profile", "view_id": "strategy_profile_hero" },
+          { "type": "card", "artifact_id": "strategic_guidelines", "view_id": "guidelines_hero" },
+          { "type": "card", "artifact_id": "positioning_and_brand_core", "view_id": "positioning_hero" }
+        ]
+      },
+      {
+        "id": "phase_1",
+        "title": "Phase 1 — Situationsanalyse",
+        "includes": [
+          { "type": "chart", "artifact_id": "pestel", "view_id": "pestel_radar" },
+          { "type": "chart", "artifact_id": "porter_5_forces", "view_id": "porter_bars" },
+          { "type": "grid", "artifact_id": "swot", "view_id": "swot_grid" },
+          { "type": "chart", "artifact_id": "strategic_group_map", "view_id": "group_map_scatter" },
+          { "type": "cards", "artifact_id": "market_segmentation", "view_id": "segmentation_cards" },
+          { "type": "cards", "artifact_id": "target_profiles", "view_id": "target_profile_cards" }
+        ]
+      },
+      {
+        "id": "phase_2",
+        "title": "Phase 2 — Strategieformulierung",
+        "includes": [
+          { "type": "card", "artifact_id": "strategic_guidelines", "view_id": "vision_card" },
+          { "type": "card", "artifact_id": "strategic_guidelines", "view_id": "mission_card" },
+          { "type": "timeline", "artifact_id": "strategic_guidelines", "view_id": "goals_timeline" }
+        ]
+      },
+      {
+        "id": "phase_3",
+        "title": "Phase 3 — Positionierung & Marke",
+        "includes": [
+          { "type": "card", "artifact_id": "positioning_and_brand_core", "view_id": "positioning_canvas" },
+          { "type": "card", "artifact_id": "positioning_and_brand_core", "view_id": "competitive_strategy_compare" },
+          { "type": "visual", "artifact_id": "positioning_and_brand_core", "view_id": "brand_prism_visual" },
+          { "type": "visual", "artifact_id": "positioning_and_brand_core", "view_id": "brand_wheel_visual" },
+          { "type": "card", "artifact_id": "positioning_and_brand_core", "view_id": "brand_voice_card" }
+        ]
+      },
+      {
+        "id": "phase_4",
+        "title": "Phase 4 — Marketing-Mix & Maßnahmen",
+        "includes": [
+          { "type": "chart", "artifact_id": "marketing_plan", "view_id": "mix_radar" },
+          { "type": "cards", "artifact_id": "marketing_plan", "view_id": "mix_cards" },
+          { "type": "visual", "artifact_id": "marketing_plan", "view_id": "channels_stack" },
+          {
+            "type": "kanban",
+            "artifact_id": "marketing_plan",
+            "view_id": "measures_kanban",
+            "pdf_transform": "flatten_kanban_to_tables"
+          },
+          { "type": "card", "artifact_id": "marketing_plan", "view_id": "constraints_card" }
+        ]
+      },
+      {
+        "id": "phase_5",
+        "title": "Phase 5 — Content & Umsetzung",
+        "includes": [
+          { "type": "cards", "artifact_id": "content_plan", "view_id": "pillars_cards" },
+          {
+            "type": "board",
+            "artifact_id": "content_plan",
+            "view_id": "editorial_board_4w",
+            "pdf_transform": "flatten_board_to_week_tables"
+          },
+          { "type": "list", "artifact_id": "content_plan", "view_id": "briefings_list", "pdf_transform": "actions_as_badges" }
+        ]
+      },
+      {
+        "id": "action_plan",
+        "title": "Kurz-Aktionsplan",
+        "includes": [
+          {
+            "type": "derived",
+            "source": ["marketing_plan.measures.kanban.now", "content_plan.editorial_board_4w.week_1"],
+            "output": "table",
+            "label": "Was du als Nächstes tun solltest (Now + Woche 1)"
+          }
+        ]
+      }
+    ],
+    "export_actions": {
+      "trigger": "export_strategy_pdf",
+      "job_entity": "pdf_export_job",
+      "result": { "type": "file_url", "field": "pdf_export_job.file_url" }
+    }
+  }
+  

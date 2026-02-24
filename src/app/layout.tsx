@@ -18,8 +18,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "FlashyCards",
-  description: "Master your knowledge with flashcards",
+  title: "SaaS Template",
+  description: "A clean foundation for building SaaS products",
 };
 
 export default function RootLayout({
@@ -40,7 +40,7 @@ export default function RootLayout({
           <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
               <div className="flex items-center gap-6">
-                <h1 className="text-xl font-semibold">FlashyCards</h1>
+                <h1 className="text-xl font-semibold">SaaS Template</h1>
               </div>
               <div className="flex items-center gap-4">
                 <SignedOut>

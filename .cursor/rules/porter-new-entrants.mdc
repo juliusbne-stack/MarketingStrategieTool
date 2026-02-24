@@ -1,0 +1,124 @@
+---
+description: Regeln für "Bedrohung durch neue Marktteilnehmer" (Porter-Modell) – Qualität, Quellen, Anti-Halluzination, Berater-Ton
+globs: "**/*porter*,**/external-insight-actions.ts,**/phase1-artifacts.ts,**/phase1-openai.ts"
+alwaysApply: false
+---
+
+# Porter: Bedrohung durch neue Marktteilnehmer
+
+Regeln für die Analyse "Bedrohung durch neue Marktteilnehmer" aus der Markt- & Wettbewerbsanalyse (Porter-Modell). Ziel: Inhalte top aktuell, business-relevant, greifbar, aus seriösen Quellen, Berater-Sicht, 40-Jahre-Erfahrungs-Niveau. Keine Halluzinationen.
+
+**DU-FORM (PFLICHT):** Alle Ausgaben sprechen den Leser mit "du" an. Er soll sich persönlich angesprochen fühlen. Die Software agiert als persönlicher Marketingberater – keine Sie-Form, keine unpersönliche "man"-Formulierung.
+
+## 1. Quellen & Aktualität
+
+- **Maximales Quellenalter**: Quellen älter als 24 Monate nur als Ergänzung, nie als alleiniger Beleg. Explizit festlegen: Ab wann gilt eine Quelle als veraltet?
+- **Priorisierung nach Jahr**: 2025 > 2024 > 2023. Wenn nur ältere Quellen verfügbar: Hinweis einbauen, dass die Einschätzung auf älteren Daten basiert.
+- **Wikipedia-Regel**: Wikipedia (tier3) nie als einzige oder primäre Quelle für Unternehmen, Zahlen oder Marktaussagen. Nur für Definitionen/Basics.
+- **Mindestanzahl Quellen pro Aussage**: Kritische Aussagen (Marktanteile, konkrete Unternehmen) nur mit mindestens 2 Quellen.
+- **Quellen-Zuordnung erzwingen**: Jede `entry_barrier`, jeder `potential_new_entrant` muss mindestens eine `source_url` haben. Keine Aussage ohne Quellenbezug.
+
+## 2. Anti-Halluzination
+
+- **Kein Unternehmen ohne Quellenbeleg**: Jeder Firmenname muss in den bereitgestellten Quellen vorkommen. Keine "ähnlichen" oder "typischen" Beispiele erfinden.
+- **Keine Zahlen ohne Quelle**: Prozentangaben, Marktgrößen, Wachstumsraten nur mit explizitem Quellenverweis.
+- **Keine Studien ohne Nennung**: "Studien zeigen …" nur mit konkreter Studie/Quelle.
+- **Unsicherheit explizit machen**: Wenn etwas plausibel, aber nicht quellenbelegt ist: als "plausible Marktannahme" oder "typischerweise" kennzeichnen – nie als Fakt.
+- **Verbotene Platzhalter**: Keine Formulierungen wie "ein großer Anbieter", "führende Unternehmen", "Company X", "Anbieter A/B".
+- **Keine Verwechslung**: Ähnliche Firmennamen (z.B. SAP vs. SAP SE) klar trennen; keine Vermischung von Konzernen und Tochtergesellschaften.
+
+## 3. Business-Relevanz (kontextabhängig)
+
+- **Pflichtfelder aus Kontext**: Immer nutzen: `one_liner`, `offer_type`, `geo_market`, `target_group`, `buyer_type` – Analyse muss darauf Bezug nehmen.
+- **Regionale Differenzierung**: DE/EU vs. global: unterschiedliche Barrieren, Regulierung, Akteure. Keine globalen Aussagen für lokale Märkte.
+- **B2B vs. B2C**: B2B: längere Zyklen, Beziehungen, Zertifizierungen. B2C: Marken, Skalierung, Vertrieb. Regeln für beide Fälle.
+- **Größenklassen**: Startup vs. KMU vs. Konzern: unterschiedliche Eintrittsbarrieren und Wettbewerber.
+- **Branchenneutralität**: Keine fest verdrahteten Branchen. Logik muss aus Kontext und Quellen abgeleitet werden.
+
+## 4. Berater-Ton & 40-Jahre-Erfahrung
+
+- **Entscheidungsorientiert**: Jede Aussage soll eine klare Handlungsimplikation haben. Keine rein deskriptiven Floskeln.
+- **Keine Buzzwords**: Keine Begriffe wie "Disruption", "Game Changer", "Paradigmenwechsel" ohne konkrete Bedeutung.
+- **Pragmatisch statt akademisch**: Kurze, klare Sätze. Keine überlangen Theoriediskussionen.
+- **Konkrete Empfehlungen**: `strategic_implication` muss 2–3 umsetzbare Maßnahmen enthalten.
+- **Vorsicht bei "könnte/möglicherweise"**: Nur wenn Unsicherheit aus den Quellen folgt. Sonst: klare Aussage.
+- **Keine Marketing-Sprache**: Kein übertriebenes Lob, keine Superlative ohne Beleg.
+
+## 5. Greifbarkeit für den Leser
+
+- **Konkrete Zeitrahmen**: "2–3 Jahre" statt "mittelfristig". Konkrete Zeitangaben für Szenarien.
+- **Namen statt Kategorien**: "Siemens, Bosch, ABB" statt "große Industriekonzerne".
+- **Zahlen wo möglich**: "ca. 15 % Marktanteil" (wenn belegt) statt "signifikant".
+- **Szenarien beschreiben**: "Wenn X eintritt, dann Y" – klare Ursache–Wirkung.
+- **Kundensicht**: Formulierungen so, dass der Leser (du) sie auf sein Geschäft übertragen kann.
+
+## 6. Fallbacks bei unzureichenden Quellen
+
+- **Quellen zu dünn**: Wenn zu wenig passende Quellen: explizit "basierend auf begrenzten Quellen" o.ä. und keine starken Faktbehauptungen.
+- **Keine Quellen für einen Aspekt**: Entweder weglassen oder als "nicht aus den Quellen ableitbar" kennzeichnen.
+- **Widersprüchliche Quellen**: Beide Perspektiven nennen und begründet eine Einschätzung treffen.
+- **Kein "Raten"**: Lieber weniger Inhalt als spekulative Aussagen.
+
+## 7. Technische / Implementierungsregeln
+
+- **Source-URL-Validierung**: Alle `source_urls` müssen in `allowedSources` der Cluster vorkommen. Keine erfundenen URLs.
+- **Domain-Vielfalt**: Mindestens 2 Domains pro Force, um Einseitigkeit zu vermeiden.
+- **Schema-Konformität**: Alle Felder müssen dem `NewEntrantsDetailedSchema` entsprechen; keine zusätzlichen Felder ohne Spezifikation.
+
+## 8. Eintrittsbarrieren – Vollständigkeit & Struktur
+
+**Ziel: 4–5 Barrieren** (nicht nur 3). Schema erlaubt 3–5; bevorzugt das obere Ende.
+
+**Porter-Barrieren-Checkliste** (aus Quellen ableiten, branchenspezifisch priorisieren):
+
+| Barriere | Beschreibung | Vermeiden |
+|----------|--------------|-----------|
+| Kapitalbedarf & Skaleneffekte | Produktion, Lager, Mindestbestellmengen, Materialeinkauf | Oft vergessen – typische Porter-Barriere |
+| Markenbekanntheit & Vertrauen | Nur mit konkreten Firmennamen aus Quellen | "Etablierte Marken" ohne Namen |
+| Lieferantenbeziehungen | Gore-Tex, Lizenzgeber, Spezialmaterialien, begrenzte Kapazität | Nicht mit "Distribution" vermischen |
+| Patente & Technologie | IP, Lizenzen, proprietäre Technologien | Nur wenn in Quellen belegt |
+| Zugang zu Vertriebskanälen | Fachhandel, Retail, Regalfläche, Händlernetz | Nicht mit Logistik vermischen |
+| Logistik & Lieferketten | Lager, Versand, Supply Chain | Getrennt von Vertriebskanälen |
+| Regulierung & Zertifizierung | REACH, Bluesign, Fair Wear, Compliance | Nicht vage "Nachhaltigkeit" – konkrete Standards |
+| Wechselkosten | Kundenbindung, Lock-in | Nur wenn aus Quellen ableitbar |
+
+**Kritische Trennung:**
+- "Distribution und Logistik" als eine Barriere → **falsch**. Trennen in "Zugang zu Vertriebskanälen" und "Logistik & Lieferketten".
+- "Nachhaltigkeit" als unscharfe Barriere → **falsch**. Präzisieren zu "Zertifizierungs- und Compliance-Anforderungen" mit konkreten Labels (Bluesign, Fair Wear, REACH).
+
+**Stärke-Begründung:** `rationale` soll erklären, *warum* "Hoch"/"Mittel"/"Niedrig" – nicht nur den Faktor beschreiben.
+
+## 9. Verbotene Muster (Explizit)
+
+- "Etablierte Marken" ohne konkrete Namen
+- "Produktlinienerweiterung" ohne Beispiele
+- "Laut Experten" ohne Quelle
+- "Die Branche erlebt …" ohne Beleg
+- Platzhalter wie "Anbieter X", "Unternehmen Y"
+- Lehrbuch-Definitionen (reine Porter-Theorie ohne Marktbezug)
+- Copy-Paste zwischen `short_summary`, `competition_impact` und `entry_barriers`
+- `details` als Wiederholung von `rationale`
+- "Distribution und Logistik" als eine Barriere (trennen)
+- "Nachhaltigkeit" als vage Barriere (präzisieren zu Zertifizierung/Compliance)
+
+## 10. Qualitäts-Checkliste (für Validierung/Review)
+
+- [ ] Jedes Unternehmen in den Quellen belegt?
+- [ ] Jede Zahl mit Quelle?
+- [ ] Kontext (one_liner, geo_market, target_group) genutzt?
+- [ ] Keine generischen Formulierungen?
+- [ ] `strategic_implication` enthält konkrete Maßnahmen?
+- [ ] Keine Wiederholungen zwischen Abschnitten?
+- [ ] Quellen aktuell (Priorität 2025 > 2024)?
+- [ ] Mindestens 2 Domains pro Force?
+- [ ] **entry_barriers:** 4–5 Barrieren (nicht nur 3)?
+- [ ] **entry_barriers:** "Distribution und Logistik" getrennt statt kombiniert?
+- [ ] **entry_barriers:** "Nachhaltigkeit" präzisiert zu Zertifizierung/Compliance?
+- [ ] **entry_barriers:** rationale begründet die Stärke (Hoch/Mittel/Niedrig)?
+
+## 11. Stil: 40 Jahre Erfahrung
+
+- **Mustererkennung**: Typische Branchenmuster benennen (z.B. "In regulierten Märkten …").
+- **Historische Einordnung**: Wo sinnvoll, Entwicklungen der letzten Jahre skizzieren.
+- **Ruhe im Ton**: Keine Übertreibungen, keine Panikmache.
+- **Fokus auf Wesentliches**: Nur das Nötige, keine Fülltexte.

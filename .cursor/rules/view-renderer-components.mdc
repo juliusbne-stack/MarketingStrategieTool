@@ -1,0 +1,24 @@
+---
+alwaysApply: false
+description: View renderer mapping for views.json to UI components (Recharts + shadcn)
+---
+
+# View Renderer Rules (Spec -> UI)
+
+Views must render from `phaseX.views.json` and `final_dashboard.views.json`.
+
+## Chart Library
+- Use Recharts as default.
+- Do not introduce Chart.js.
+
+## Supported View Types (must exist as components)
+- `ui_hero_card`, `ui_detail_card`, `ui_cards`, `ui_canvas_card`
+- `ui_grid_2x2`, `ui_channel_stack`, `ui_kanban_light`, `ui_board_4_columns`, `ui_list_with_actions`
+- `ui_hex_prism` (Brand Identity Prism)
+- `ui_brand_wheel` (Markensteuerrad)
+- `recharts_radar`, `recharts_bar`, `recharts_scatter`
+
+## Styling
+- Bold/high-contrast, card-first.
+- Use shadcn/ui components whenever possible.
+- Avoid large paragraphs; prefer structured fields.

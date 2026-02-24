@@ -1,0 +1,68 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_2",
+      "phase_name": "Strategieformulierung",
+      "charts_library": "recharts",
+      "design_style": "bold_high_contrast",
+      "layout": "wizard_fullscreen"
+    },
+    "views": [
+      {
+        "artifact_id": "strategic_guidelines",
+        "view_id": "guidelines_hero",
+        "type": "ui_hero_card",
+        "title": "Strategische Leitplanken",
+        "ui": {
+          "headline_from": "vision.statement",
+          "chips": [
+            { "from": "selected_variant_id", "label": "Variante" }
+          ],
+          "callouts": [
+            { "from": "vision.guiding_principle", "label": "Leitprinzip" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "strategic_guidelines",
+        "view_id": "vision_card",
+        "type": "ui_detail_card",
+        "title": "Vision",
+        "ui": {
+          "fields": [
+            { "from": "vision.statement", "label": "Vision-Statement" },
+            { "from": "vision.meaning", "label": "Bedeutung" },
+            { "from": "vision.guiding_principle", "label": "Leitprinzip" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "strategic_guidelines",
+        "view_id": "mission_card",
+        "type": "ui_detail_card",
+        "title": "Mission",
+        "ui": {
+          "fields": [
+            { "from": "mission.statement", "label": "Mission-Statement" },
+            { "from": "mission.focus", "label": "Fokus" },
+            { "from": "mission.exclusion", "label": "Abgrenzung" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "strategic_guidelines",
+        "view_id": "goals_timeline",
+        "type": "ui_timeline_3_columns",
+        "title": "Ziele-Roadmap",
+        "ui": {
+          "columns": [
+            { "key": "goals.short_term", "label": "0–6 Monate" },
+            { "key": "goals.mid_term", "label": "6–18 Monate" },
+            { "key": "goals.long_term", "label": "18–36 Monate" }
+          ],
+          "max_items_per_column": 5
+        }
+      }
+    ]
+  }
+  

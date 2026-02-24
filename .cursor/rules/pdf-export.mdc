@@ -1,0 +1,20 @@
+---
+alwaysApply: false
+description: PDF export rules for the final strategy document
+---
+
+# PDF Export Rules
+
+PDF export must follow `pdf_export.spec.json`.
+
+## Requirements
+- Includes: cover, exec summary, phase 1–5, action plan.
+- Charts: prefer SVG export; fallback to images if needed.
+- Kanban/Boards must be flattened to tables for PDF.
+
+## Jobs
+- Export runs as a job (`pdf_export_job`) with statuses queued/running/done/failed.
+- UI shows progress and provides download link when ready.
+
+## Do Not
+- Do not change section order or omit required sections from spec.

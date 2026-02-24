@@ -1,0 +1,102 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "language": "de",
+      "tone": "du",
+      "audience_level": "beginner_to_intermediate",
+      "phase_id": "phase_3",
+      "phase_name": "Strategieumsetzung (Positionierung & Marke)",
+      "max_steps_before_results": 10
+    },
+    "questions": [
+      {
+        "id": "p3_offer_differentiation_sharpness",
+        "order": 10,
+        "type": "single_choice",
+        "question": "Wie klar soll sich dein Angebot von anderen abheben?",
+        "required": true,
+        "options": [
+          { "id": "very_sharp", "label": "Sehr klar – lieber weniger Kunden, aber die richtigen" },
+          { "id": "sharp", "label": "Klar, aber nicht zu spitz" },
+          { "id": "broad", "label": "Eher breit, um viele anzusprechen" }
+        ],
+        "allow_other": true,
+        "other_label": "Andere (kurz)",
+        "other_max_chars": 120,
+        "other_mapping": { "method": "llm_classify_to_options", "on_low_confidence": "store_other_only" }
+      },
+      {
+        "id": "p3_market_role",
+        "order": 20,
+        "type": "single_choice",
+        "question": "Welche Rolle möchtest du in deinem Markt einnehmen?",
+        "required": true,
+        "options": [
+          { "id": "specialist_expert", "label": "Spezialist / Experte" },
+          { "id": "trusted_guide", "label": "Vertrauenswürdiger Begleiter" },
+          { "id": "innovative_leader", "label": "Innovativer Vorreiter" },
+          { "id": "solid_allrounder", "label": "Solider Allrounder" }
+        ],
+        "allow_other": true,
+        "other_label": "Andere (kurz)",
+        "other_max_chars": 120,
+        "other_mapping": { "method": "llm_classify_to_options", "on_low_confidence": "store_other_only" }
+      },
+      {
+        "id": "p3_brand_emotion",
+        "order": 30,
+        "type": "single_choice",
+        "question": "Wie sollen sich Menschen fühlen, wenn sie an deine Marke denken?",
+        "required": true,
+        "options": [
+          { "id": "safe_supported", "label": "Sicher & gut aufgehoben" },
+          { "id": "motivated_inspired", "label": "Motiviert & inspiriert" },
+          { "id": "clear_oriented", "label": "Klar & orientiert" },
+          { "id": "challenged_activated", "label": "Herausgefordert & aktiviert" },
+          { "id": "calm_relaxed", "label": "Ruhig & entspannt" }
+        ],
+        "allow_other": true,
+        "other_label": "Andere (kurz)",
+        "other_max_chars": 140,
+        "other_mapping": { "method": "llm_map_to_emotion", "on_low_confidence": "store_other_only" }
+      },
+      {
+        "id": "p3_risk_vs_experiment",
+        "order": 40,
+        "type": "single_choice",
+        "question": "Wie wichtig ist dir Sicherheit gegenüber Experimenten?",
+        "required": true,
+        "options": [
+          { "id": "safe", "label": "Lieber bewährt & sicher" },
+          { "id": "balanced", "label": "Ausgewogen" },
+          { "id": "experimental", "label": "Offen für neue Wege" }
+        ],
+        "allow_other": true,
+        "other_label": "Andere (kurz)",
+        "other_max_chars": 120,
+        "other_mapping": { "method": "llm_classify_to_options", "on_low_confidence": "store_other_only" }
+      },
+      {
+        "id": "p3_proof_assets",
+        "order": 50,
+        "type": "multi_choice",
+        "question": "Welche Art von Beweisen/Vertrauenssignalen kannst du realistisch zeigen?",
+        "helper": "Wenn noch nichts vorhanden ist: kein Problem, dann bauen wir anders Vertrauen auf.",
+        "required": true,
+        "options": [
+          { "id": "cases", "label": "Ergebnisse / Cases" },
+          { "id": "testimonials", "label": "Kundenstimmen" },
+          { "id": "expertise", "label": "Eigene Expertise (Erfahrung, Background)" },
+          { "id": "process", "label": "Klare Methode / Prozess" },
+          { "id": "community", "label": "Community / Reichweite" },
+          { "id": "none_yet", "label": "Noch nichts davon" }
+        ],
+        "constraints": { "max_selected": 3 },
+        "allow_other": true,
+        "other_label": "Andere (kurz)",
+        "other_max_chars": 140,
+        "other_mapping": { "method": "llm_map_to_proof", "on_low_confidence": "store_other_only" }
+      }
+    ]
+  }
+  

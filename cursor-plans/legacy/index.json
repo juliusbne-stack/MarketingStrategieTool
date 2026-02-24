@@ -1,0 +1,137 @@
+{
+    "title": "Legacy Cursor Plans Index",
+    "default_execution_prompt": "Follow the referenced plan exactly. Apply all .cursor/rules/*.mdc. Execute tasks in order. After each task: summarize changes + list modified files + how to verify. Stop when acceptance criteria are met.",
+    "plans": [
+      {
+        "id": "app-artifacts-registry",
+        "file": "cursor-plans/legacy/app.artifacts_registry.json",
+        "notes": "Global artifact registry"
+      },
+      {
+        "id": "app-data-model",
+        "file": "cursor-plans/legacy/app.data_model.json",
+        "notes": "Core application data model"
+      },
+      {
+        "id": "app-ui",
+        "file": "cursor-plans/legacy/app.ui.json",
+        "notes": "Global UI structure and rules"
+      },
+      {
+        "id": "final-dashboard-views",
+        "file": "cursor-plans/legacy/final_dashboard.views.json",
+        "notes": "Final dashboard view definitions"
+      },
+      {
+        "id": "pdf-export-spec",
+        "file": "cursor-plans/legacy/pdf_export.spec.json",
+        "notes": "PDF export specification"
+      },
+  
+      {
+        "id": "phase-1",
+        "file": "cursor-plans/legacy/phase1.process.json",
+        "notes": "Phase 1 main process"
+      },
+      {
+        "id": "phase-1-artifacts",
+        "file": "cursor-plans/legacy/phase1.artifacts.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-1-questions",
+        "file": "cursor-plans/legacy/phase1.questions.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-1-views",
+        "file": "cursor-plans/legacy/phase1.views.json",
+        "notes": ""
+      },
+  
+      {
+        "id": "phase-2",
+        "file": "cursor-plans/legacy/phase2.process.json",
+        "notes": "Phase 2 main process"
+      },
+      {
+        "id": "phase-2-artifacts",
+        "file": "cursor-plans/legacy/phase2.artifacts.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-2-questions",
+        "file": "cursor-plans/legacy/phase2.questions.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-2-views",
+        "file": "cursor-plans/legacy/phase2.views.json",
+        "notes": ""
+      },
+  
+      {
+        "id": "phase-3",
+        "file": "cursor-plans/legacy/phase3.process.json",
+        "notes": "Phase 3 main process"
+      },
+      {
+        "id": "phase-3-artifacts",
+        "file": "cursor-plans/legacy/phase3.artifacts.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-3-questions",
+        "file": "cursor-plans/legacy/phase3.questions.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-3-views",
+        "file": "cursor-plans/legacy/phase3.views.json",
+        "notes": ""
+      },
+  
+      {
+        "id": "phase-4",
+        "file": "cursor-plans/legacy/phase4.process.json",
+        "notes": "Phase 4 main process"
+      },
+      {
+        "id": "phase-4-artifacts",
+        "file": "cursor-plans/legacy/phase4.artifacts.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-4-questions",
+        "file": "cursor-plans/legacy/phase4.questions.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-4-views",
+        "file": "cursor-plans/legacy/phase4.views.json",
+        "notes": ""
+      },
+  
+      {
+        "id": "phase-5",
+        "file": "cursor-plans/legacy/phase5.process.json",
+        "notes": "Phase 5 main process"
+      },
+      {
+        "id": "phase-5-artifacts",
+        "file": "cursor-plans/legacy/phase5.artifacts.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-5-questions",
+        "file": "cursor-plans/legacy/phase5.questions.json",
+        "notes": ""
+      },
+      {
+        "id": "phase-5-views",
+        "file": "cursor-plans/legacy/phase5.views.json",
+        "notes": ""
+      }
+    ]
+  }
+  

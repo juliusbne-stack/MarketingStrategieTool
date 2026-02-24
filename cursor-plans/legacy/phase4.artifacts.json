@@ -1,0 +1,196 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_4",
+      "phase_name": "Operationalisierung (Marketing-Mix & Maßnahmen)"
+    },
+    "artifacts": [
+      {
+        "id": "marketing_plan_draft",
+        "versioned": false,
+        "locked_on_phase_lock": false,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mix_radar": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "dimension": { "type": "string", "enum": ["content", "community", "performance_ads", "seo", "email_crm", "partnerships"] },
+                  "label": { "type": "string" },
+                  "score": { "type": "integer", "minimum": 0, "maximum": 100 }
+                },
+                "required": ["dimension", "label", "score"]
+              },
+              "minItems": 6,
+              "maxItems": 6
+            },
+            "channels": {
+              "type": "object",
+              "properties": {
+                "stack": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "channel_id": { "type": "string" },
+                      "label": { "type": "string" },
+                      "weight": { "type": "integer", "minimum": 0, "maximum": 100 },
+                      "role": { "type": "string", "enum": ["primary", "secondary", "supporting"] }
+                    },
+                    "required": ["channel_id", "label", "weight", "role"]
+                  },
+                  "maxItems": 10
+                }
+              },
+              "required": ["stack"]
+            },
+            "measures": {
+              "type": "object",
+              "properties": {
+                "kanban": {
+                  "type": "object",
+                  "properties": {
+                    "now": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 6 },
+                    "next": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 8 },
+                    "later": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 10 }
+                  },
+                  "required": ["now", "next", "later"]
+                }
+              },
+              "required": ["kanban"]
+            },
+            "constraints": {
+              "type": "object",
+              "properties": {
+                "time_per_week_band": { "type": "string", "enum": ["lt_2", "2_5", "5_10", "gt_10"] },
+                "complexity_level": { "type": "string", "enum": ["simple", "balanced", "advanced"] },
+                "budget_band": { "type": "string", "enum": ["none", "low", "medium", "high", "unknown"] }
+              },
+              "required": ["time_per_week_band", "complexity_level", "budget_band"]
+            }
+          },
+          "required": ["mix_radar", "channels", "measures", "constraints"],
+          "$defs": {
+            "measure_item": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string", "maxLength": 80 },
+                "goal": { "type": "string", "maxLength": 120 },
+                "effort": { "type": "string", "enum": ["low", "medium", "high"] },
+                "impact": { "type": "string", "enum": ["low", "medium", "high"] }
+              },
+              "required": ["id", "name", "goal", "effort", "impact"]
+            }
+          }
+        }
+      },
+      {
+        "id": "marketing_plan",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mix_radar": { "$ref": "#/$defs/mix_radar" },
+            "mix_cards": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "dimension": { "type": "string" },
+                  "label": { "type": "string" },
+                  "focus_reason": { "type": "string", "maxLength": 220 },
+                  "quick_win": { "type": "string", "maxLength": 180 }
+                },
+                "required": ["dimension", "label", "focus_reason", "quick_win"]
+              },
+              "maxItems": 6
+            },
+            "channels": {
+              "type": "object",
+              "properties": {
+                "stack": { "$ref": "#/$defs/channel_stack" },
+                "notes": { "type": "string", "maxLength": 240 }
+              },
+              "required": ["stack", "notes"]
+            },
+            "measures": {
+              "type": "object",
+              "properties": {
+                "kanban": { "$ref": "#/$defs/kanban" },
+                "rules_of_engagement": { "type": "array", "items": { "type": "string" }, "maxItems": 5 }
+              },
+              "required": ["kanban", "rules_of_engagement"]
+            },
+            "constraints": { "$ref": "#/$defs/constraints" }
+          },
+          "required": ["mix_radar", "mix_cards", "channels", "measures", "constraints"],
+          "$defs": {
+            "mix_radar": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "dimension": { "type": "string", "enum": ["content", "community", "performance_ads", "seo", "email_crm", "partnerships"] },
+                  "label": { "type": "string" },
+                  "score": { "type": "integer", "minimum": 0, "maximum": 100 }
+                },
+                "required": ["dimension", "label", "score"]
+              },
+              "minItems": 6,
+              "maxItems": 6
+            },
+            "channel_stack": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "channel_id": { "type": "string" },
+                  "label": { "type": "string" },
+                  "weight": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "role": { "type": "string", "enum": ["primary", "secondary", "supporting"] },
+                  "why": { "type": "string", "maxLength": 180 }
+                },
+                "required": ["channel_id", "label", "weight", "role", "why"]
+              },
+              "maxItems": 10
+            },
+            "kanban": {
+              "type": "object",
+              "properties": {
+                "now": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 6 },
+                "next": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 8 },
+                "later": { "type": "array", "items": { "$ref": "#/$defs/measure_item" }, "maxItems": 10 }
+              },
+              "required": ["now", "next", "later"]
+            },
+            "measure_item": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string", "maxLength": 80 },
+                "goal": { "type": "string", "maxLength": 120 },
+                "effort": { "type": "string", "enum": ["low", "medium", "high"] },
+                "impact": { "type": "string", "enum": ["low", "medium", "high"] },
+                "owner": { "type": "string", "enum": ["self", "mixed", "external", "unclear"] }
+              },
+              "required": ["id", "name", "goal", "effort", "impact", "owner"]
+            },
+            "constraints": {
+              "type": "object",
+              "properties": {
+                "time_per_week_band": { "type": "string", "enum": ["lt_2", "2_5", "5_10", "gt_10"] },
+                "complexity_level": { "type": "string", "enum": ["simple", "balanced", "advanced"] },
+                "budget_band": { "type": "string", "enum": ["none", "low", "medium", "high", "unknown"] }
+              },
+              "required": ["time_per_week_band", "complexity_level", "budget_band"]
+            }
+          }
+        }
+      }
+    ]
+  }
+  

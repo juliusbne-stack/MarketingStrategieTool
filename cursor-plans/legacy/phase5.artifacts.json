@@ -1,0 +1,174 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_5",
+      "phase_name": "Content & Umsetzung"
+    },
+    "artifacts": [
+      {
+        "id": "content_plan_draft",
+        "versioned": false,
+        "locked_on_phase_lock": false,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "pillars": { "$ref": "#/$defs/pillars" },
+            "editorial_board_4w": { "$ref": "#/$defs/editorial_board_4w" },
+            "briefings": { "$ref": "#/$defs/briefings" }
+          },
+          "required": ["pillars", "editorial_board_4w", "briefings"],
+          "$defs": {
+            "pillars": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string", "maxLength": 60 },
+                  "core_messages": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                  "cta": { "type": "string", "maxLength": 80 }
+                },
+                "required": ["id", "title", "core_messages", "cta"]
+              },
+              "maxItems": 5
+            },
+            "editorial_board_4w": {
+              "type": "object",
+              "properties": {
+                "week_1": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_2": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_3": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_4": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 }
+              },
+              "required": ["week_1", "week_2", "week_3", "week_4"]
+            },
+            "editorial_item": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "channel": { "type": "string", "maxLength": 40 },
+                "format": { "type": "string", "maxLength": 30 },
+                "pillar_id": { "type": "string" },
+                "hook": { "type": "string", "maxLength": 80 },
+                "goal": { "type": "string", "maxLength": 60 }
+              },
+              "required": ["id", "channel", "format", "pillar_id", "hook", "goal"]
+            },
+            "briefings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string", "maxLength": 80 },
+                  "channel": { "type": "string", "maxLength": 40 },
+                  "format": { "type": "string", "maxLength": 30 },
+                  "objective": { "type": "string", "maxLength": 120 },
+                  "target_audience_hint": { "type": "string", "maxLength": 120 },
+                  "key_points": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+                  "cta": { "type": "string", "maxLength": 80 },
+                  "generate_actions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "action_id": { "type": "string", "enum": ["generate_post", "generate_script", "generate_outline", "generate_hooks"] },
+                        "label": { "type": "string", "maxLength": 40 }
+                      },
+                      "required": ["action_id", "label"]
+                    },
+                    "maxItems": 3
+                  }
+                },
+                "required": ["id", "title", "channel", "format", "objective", "target_audience_hint", "key_points", "cta", "generate_actions"]
+              },
+              "maxItems": 20
+            }
+          }
+        }
+      },
+      {
+        "id": "content_plan",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "pillars": { "$ref": "#/$defs/pillars" },
+            "editorial_board_4w": { "$ref": "#/$defs/editorial_board_4w" },
+            "briefings": { "$ref": "#/$defs/briefings" }
+          },
+          "required": ["pillars", "editorial_board_4w", "briefings"],
+          "$defs": {
+            "pillars": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string", "maxLength": 60 },
+                  "core_messages": { "type": "array", "items": { "type": "string" }, "maxItems": 4 },
+                  "cta": { "type": "string", "maxLength": 80 }
+                },
+                "required": ["id", "title", "core_messages", "cta"]
+              },
+              "maxItems": 5
+            },
+            "editorial_board_4w": {
+              "type": "object",
+              "properties": {
+                "week_1": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_2": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_3": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 },
+                "week_4": { "type": "array", "items": { "$ref": "#/$defs/editorial_item" }, "maxItems": 10 }
+              },
+              "required": ["week_1", "week_2", "week_3", "week_4"]
+            },
+            "editorial_item": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "channel": { "type": "string", "maxLength": 40 },
+                "format": { "type": "string", "maxLength": 30 },
+                "pillar_id": { "type": "string" },
+                "hook": { "type": "string", "maxLength": 80 },
+                "goal": { "type": "string", "maxLength": 60 }
+              },
+              "required": ["id", "channel", "format", "pillar_id", "hook", "goal"]
+            },
+            "briefings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string", "maxLength": 80 },
+                  "channel": { "type": "string", "maxLength": 40 },
+                  "format": { "type": "string", "maxLength": 30 },
+                  "objective": { "type": "string", "maxLength": 120 },
+                  "target_audience_hint": { "type": "string", "maxLength": 120 },
+                  "key_points": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+                  "cta": { "type": "string", "maxLength": 80 },
+                  "generate_actions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "action_id": { "type": "string", "enum": ["generate_post", "generate_script", "generate_outline", "generate_hooks"] },
+                        "label": { "type": "string", "maxLength": 40 }
+                      },
+                      "required": ["action_id", "label"]
+                    },
+                    "maxItems": 3
+                  }
+                },
+                "required": ["id", "title", "channel", "format", "objective", "target_audience_hint", "key_points", "cta", "generate_actions"]
+              },
+              "maxItems": 20
+            }
+          }
+        }
+      }
+    ]
+  }
+  

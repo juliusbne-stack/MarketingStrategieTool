@@ -1,0 +1,89 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "language": "de"
+    },
+    "artifacts_registry": [
+      {
+        "artifact_id": "strategy_profile",
+        "phase_id": "phase_1",
+        "locked": true,
+        "versioned": true,
+        "depends_on": ["answers.phase_1"]
+      },
+      { "artifact_id": "pestel", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+      { "artifact_id": "porter_5_forces", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+      { "artifact_id": "swot", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+      { "artifact_id": "strategic_group_map", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+      { "artifact_id": "market_segmentation", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+      { "artifact_id": "target_profiles", "phase_id": "phase_1", "locked": true, "versioned": true, "depends_on": ["answers.phase_1"] },
+  
+      {
+        "artifact_id": "strategic_guidelines",
+        "phase_id": "phase_2",
+        "locked": true,
+        "versioned": true,
+        "depends_on": ["strategy_profile", "answers.phase_2"]
+      },
+  
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "phase_id": "phase_3",
+        "locked": true,
+        "versioned": true,
+        "depends_on": ["strategy_profile", "strategic_guidelines", "answers.phase_3"]
+      },
+  
+      {
+        "artifact_id": "marketing_plan",
+        "phase_id": "phase_4",
+        "locked": true,
+        "versioned": true,
+        "depends_on": ["strategy_profile", "strategic_guidelines", "positioning_and_brand_core", "answers.phase_4"]
+      },
+  
+      {
+        "artifact_id": "content_plan",
+        "phase_id": "phase_5",
+        "locked": true,
+        "versioned": true,
+        "depends_on": ["marketing_plan", "positioning_and_brand_core", "answers.phase_5"]
+      }
+    ],
+    "enrichment": {
+      "competitor_enrichment": {
+        "status": "planned",
+        "phase": "phase_1",
+        "triggers": ["p1_competitor_names"],
+        "outputs": ["competitor_profiles"],
+        "notes": "V2: automatisches Anreichern (Web-Recherche) pro Wettbewerber, speicherbar als eigenes Artefakt."
+      }
+    },
+    "actions_registry": [
+      {
+        "action_id": "generate_post",
+        "label": "Post generieren",
+        "inputs": ["content_plan.briefings[*]", "positioning_and_brand_core.brand.voice"],
+        "outputs": ["generated_assets.post_draft"]
+      },
+      {
+        "action_id": "generate_script",
+        "label": "Video-Skript generieren",
+        "inputs": ["content_plan.briefings[*]", "positioning_and_brand_core.brand.voice"],
+        "outputs": ["generated_assets.video_script"]
+      },
+      {
+        "action_id": "generate_outline",
+        "label": "Outline generieren",
+        "inputs": ["content_plan.briefings[*]"],
+        "outputs": ["generated_assets.outline"]
+      },
+      {
+        "action_id": "generate_hooks",
+        "label": "Hooks generieren",
+        "inputs": ["content_plan.briefings[*]"],
+        "outputs": ["generated_assets.hooks"]
+      }
+    ]
+  }
+  

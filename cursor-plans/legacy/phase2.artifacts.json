@@ -1,0 +1,100 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_2",
+      "phase_name": "Strategieformulierung"
+    },
+    "artifacts": [
+      {
+        "id": "strategic_guidelines_variants",
+        "versioned": false,
+        "locked_on_phase_lock": false,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "variants": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "variant_id": { "type": "string", "enum": ["conservative", "balanced", "bold"] },
+                  "label": { "type": "string" },
+                  "vision": {
+                    "type": "object",
+                    "properties": {
+                      "statement": { "type": "string", "maxLength": 160 },
+                      "meaning": { "type": "string", "maxLength": 220 },
+                      "guiding_principle": { "type": "string", "maxLength": 140 }
+                    },
+                    "required": ["statement", "meaning", "guiding_principle"]
+                  },
+                  "mission": {
+                    "type": "object",
+                    "properties": {
+                      "statement": { "type": "string", "maxLength": 180 },
+                      "focus": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                      "exclusion": { "type": "string", "maxLength": 180 }
+                    },
+                    "required": ["statement", "focus", "exclusion"]
+                  },
+                  "goals": {
+                    "type": "object",
+                    "properties": {
+                      "short_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                      "mid_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                      "long_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 }
+                    },
+                    "required": ["short_term", "mid_term", "long_term"]
+                  }
+                },
+                "required": ["variant_id", "label", "vision", "mission", "goals"]
+              }
+            }
+          },
+          "required": ["variants"]
+        }
+      },
+      {
+        "id": "strategic_guidelines",
+        "versioned": true,
+        "locked_on_phase_lock": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "selected_variant_id": { "type": "string", "enum": ["conservative", "balanced", "bold"] },
+            "vision": {
+              "type": "object",
+              "properties": {
+                "statement": { "type": "string", "maxLength": 160 },
+                "meaning": { "type": "string", "maxLength": 220 },
+                "guiding_principle": { "type": "string", "maxLength": 140 }
+              },
+              "required": ["statement", "meaning", "guiding_principle"]
+            },
+            "mission": {
+              "type": "object",
+              "properties": {
+                "statement": { "type": "string", "maxLength": 180 },
+                "focus": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+                "exclusion": { "type": "string", "maxLength": 180 }
+              },
+              "required": ["statement", "focus", "exclusion"]
+            },
+            "goals": {
+              "type": "object",
+              "properties": {
+                "short_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                "mid_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 },
+                "long_term": { "type": "array", "items": { "type": "string" }, "maxItems": 5 }
+              },
+              "required": ["short_term", "mid_term", "long_term"]
+            }
+          },
+          "required": ["selected_variant_id", "vision", "mission", "goals"]
+        }
+      }
+    ]
+  }
+  

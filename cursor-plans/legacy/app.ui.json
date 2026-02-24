@@ -1,0 +1,202 @@
+{
+    "meta": {
+      "spec_version": "1.0.1",
+      "language": "de",
+      "tone": "du",
+      "compatibility": {
+        "ui_system": "shadcn-ui",
+        "rule": "Use shadcn UI components for all UI elements; avoid custom UI components when an equivalent exists."
+      }
+    },
+    "design_system": {
+      "style": "bold_high_contrast",
+      "layout_mode": "wizard_fullscreen",
+      "ui_principles": [
+        "große Headlines, klare Hierarchie",
+        "wenig Text pro Screen, viel Struktur",
+        "Cards-first Layout",
+        "schnelle Interaktionen (Tabs/Filter/Jump Links)",
+        "„Wow“-Ergebnisse: Visuals > Fließtext"
+      ],
+      "shadcn_mapping": {
+        "notes": [
+          "Alle UI-Bausteine müssen aus shadcn UI zusammengesetzt werden (keine neuen Custom-Komponenten erfinden).",
+          "Nicht-shadcn Begriffe wie Wizard/Dashboard/Chips sind Patterns/Layouts und werden mit shadcn-Komponenten umgesetzt.",
+          "Visuelle Tokens wie 'strong/high-contrast/lift' sind als Tailwind-Utilities zu interpretieren, nicht als neue Komponenten-Implementierungen."
+        ],
+        "tokens_to_tailwind": {
+          "radius_xl": "rounded-2xl",
+          "radius_lg": "rounded-xl",
+          "padding_lg": "p-6",
+          "shadow_strong": "shadow-lg",
+          "border_high_contrast": "border border-foreground/20",
+          "hover_lift": "transition hover:-translate-y-0.5 hover:shadow-lg"
+        },
+        "patterns_to_shadcn": {
+          "chips": ["badge", "toggle-group", "button"],
+          "wizard": ["progress", "card", "form", "button", "tabs"],
+          "dashboard": ["card", "accordion", "collapsible", "tabs", "table", "dialog", "sheet"],
+          "floating_drawer": ["sheet"],
+          "sticky_filters": ["tabs", "select", "popover"]
+        }
+      },
+      "components_shadcn_only": {
+        "card": {
+          "component": "card",
+          "styling": {
+            "radius_token": "radius_xl",
+            "shadow_token": "shadow_strong",
+            "border_token": "border_high_contrast",
+            "padding_token": "padding_lg"
+          }
+        },
+        "button": {
+          "component": "button",
+          "defaults": {
+            "variant": "default",
+            "size": "lg"
+          },
+          "styling": {
+            "radius_token": "radius_lg",
+            "hover_token": "hover_lift"
+          }
+        },
+        "badge": {
+          "component": "badge",
+          "defaults": {
+            "variant": "default"
+          }
+        },
+        "progress": {
+          "component": "progress"
+        },
+        "tabs": {
+          "component": "tabs",
+          "usage": ["filtering", "jump_links"]
+        },
+        "sheet": {
+          "component": "sheet",
+          "usage": ["floating_drawer"]
+        },
+        "accordion": {
+          "component": "accordion"
+        },
+        "collapsible": {
+          "component": "collapsible"
+        },
+        "table": {
+          "component": "table"
+        },
+        "dialog": {
+          "component": "dialog"
+        },
+        "select": {
+          "component": "select"
+        },
+        "popover": {
+          "component": "popover"
+        },
+        "toggle_group": {
+          "component": "toggle-group"
+        },
+        "form": {
+          "component": "form",
+          "note": "Form-Integration je nach Setup (react-hook-form + shadcn form patterns)."
+        }
+      },
+      "charts": {
+        "library": "recharts",
+        "implementation_notes": [
+          "Charts sind keine shadcn-Komponenten; UI-Wrapper (Card, Tabs, Tooltip-Surface etc.) muss shadcn sein.",
+          "Legende/Tooltip minimal halten, responsive standardmäßig."
+        ],
+        "defaults": {
+          "tooltips": true,
+          "legend": "minimal",
+          "responsive": true
+        }
+      }
+    },
+    "layouts_and_patterns": {
+      "wizard": {
+        "progress": "top_bar",
+        "max_questions_per_step": 2,
+        "allow_back": true,
+        "autosave": true,
+        "implementation_hint": {
+          "compose_with_shadcn": ["progress", "card", "form", "button"],
+          "optional": ["tabs", "accordion", "collapsible"]
+        }
+      },
+      "dashboard": {
+        "grid": "responsive_cards",
+        "sections": "collapsible",
+        "filters": "sticky_top",
+        "edit_buttons": "per_section",
+        "implementation_hint": {
+          "compose_with_shadcn": ["card", "collapsible", "tabs", "table", "button"],
+          "optional": ["dialog", "sheet", "popover", "select"]
+        }
+      },
+      "chips_pattern": {
+        "purpose": "filter_pills_or_tags",
+        "preferred_shadcn": ["toggle-group", "badge"],
+        "fallback_shadcn": ["button"],
+        "note": "Keine eigene Chip-Komponente erstellen; Badge/ToggleGroup/Button verwenden."
+      }
+    },
+    "navigation": {
+      "routes": [
+        { "id": "home", "path": "/", "label": "Home" },
+        { "id": "wizard", "path": "/wizard", "label": "Strategie erstellen" },
+        { "id": "dashboard", "path": "/dashboard", "label": "Dashboard" },
+        { "id": "exports", "path": "/exports", "label": "Export" }
+      ],
+      "wizard_phases": [
+        { "phase_id": "phase_1", "label": "Situationsanalyse" },
+        { "phase_id": "phase_2", "label": "Strategieformulierung" },
+        { "phase_id": "phase_3", "label": "Positionierung & Marke" },
+        { "phase_id": "phase_4", "label": "Marketing-Mix & Maßnahmen" },
+        { "phase_id": "phase_5", "label": "Content & Umsetzung" }
+      ]
+    },
+    "global_behaviors": {
+      "ai_chat": {
+        "enabled": true,
+        "placement": "floating_drawer",
+        "available_in": ["wizard", "dashboard"],
+        "capabilities": ["clarify_answers", "explain_results", "apply_adjustments"],
+        "implementation_hint": {
+          "shadcn_component": "sheet"
+        }
+      },
+      "versioning": {
+        "enabled": true,
+        "per_artifact": true,
+        "format": "v{n}",
+        "lock_on_phase_complete": true
+      },
+      "edit_mode": {
+        "enabled": true,
+        "behavior": "jump_to_phase_with_prefill",
+        "prefill_from_latest_locked_artifacts": true
+      }
+    },
+    "export": {
+      "enabled": true,
+      "types": [
+        { "id": "in_app", "label": "In-App Dashboard" },
+        { "id": "pdf", "label": "PDF Export" }
+      ],
+      "pdf": {
+        "layout": "executive_plus_details",
+        "includes": [
+          "executive_summary",
+          "phase_sections",
+          "all_key_visuals",
+          "action_plan"
+        ]
+      }
+    }
+  }
+  

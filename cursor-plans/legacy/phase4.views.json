@@ -1,0 +1,86 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_4",
+      "phase_name": "Operationalisierung (Marketing-Mix & Maßnahmen)",
+      "charts_library": "recharts",
+      "design_style": "bold_high_contrast",
+      "layout": "wizard_fullscreen"
+    },
+    "views": [
+      {
+        "artifact_id": "marketing_plan",
+        "view_id": "mix_radar",
+        "type": "recharts_radar",
+        "title": "Marketing-Mix Fokus",
+        "encoding": { "angleKey": "label", "radiusKey": "score" },
+        "ui": {
+          "max_height_px": 320,
+          "legend": false,
+          "tooltip_fields": ["label", "score"]
+        }
+      },
+      {
+        "artifact_id": "marketing_plan",
+        "view_id": "mix_cards",
+        "type": "ui_cards",
+        "title": "Mix-Details",
+        "ui": {
+          "repeat_over": "mix_cards",
+          "fields": [
+            { "from": "label", "label": "Bereich" },
+            { "from": "focus_reason", "label": "Warum Fokus" },
+            { "from": "quick_win", "label": "Quick Win" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "marketing_plan",
+        "view_id": "channels_stack",
+        "type": "ui_channel_stack",
+        "title": "Kanäle (gewichteter Stack)",
+        "ui": {
+          "items_from": "channels.stack",
+          "label_from": "label",
+          "weight_from": "weight",
+          "badge_from": "role",
+          "description_from": "why",
+          "max_items": 10
+        }
+      },
+      {
+        "artifact_id": "marketing_plan",
+        "view_id": "measures_kanban",
+        "type": "ui_kanban_light",
+        "title": "Maßnahmenplan",
+        "ui": {
+          "columns": [
+            { "key": "measures.kanban.now", "label": "Now" },
+            { "key": "measures.kanban.next", "label": "Next" },
+            { "key": "measures.kanban.later", "label": "Later" }
+          ],
+          "card_fields": [
+            { "from": "name", "label": "Maßnahme" },
+            { "from": "goal", "label": "Ziel" },
+            { "from": "effort", "label": "Aufwand" },
+            { "from": "impact", "label": "Impact" },
+            { "from": "owner", "label": "Owner" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "marketing_plan",
+        "view_id": "constraints_card",
+        "type": "ui_detail_card",
+        "title": "Rahmenbedingungen",
+        "ui": {
+          "fields": [
+            { "from": "constraints.time_per_week_band", "label": "Zeit/Woche" },
+            { "from": "constraints.budget_band", "label": "Budget" },
+            { "from": "constraints.complexity_level", "label": "Komplexität" }
+          ]
+        }
+      }
+    ]
+  }
+  

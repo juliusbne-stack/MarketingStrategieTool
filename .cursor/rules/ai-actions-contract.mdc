@@ -1,0 +1,24 @@
+---
+alwaysApply: false
+description: AI action contract, schema validation and repair rules for OpenAI outputs
+---
+
+# AI Actions Contract (Server-side)
+
+All `ai_action` steps in process specs must map to real server actions with the SAME action name.
+
+## Contract
+- Load inputs from DB (latest locked artifacts + latest answers).
+- Prompt must instruct the model to output valid JSON matching the artifact schema.
+- Validate output against Zod schema generated from `phaseX.artifacts.json`.
+
+## Error Handling
+- If invalid: run a single "repair" pass (provide validation errors + schema).
+- If still invalid: generate a minimal valid fallback object (never crash the wizard).
+
+## Storage
+- Draft outputs: create/update draft artifact rows.
+- Locked outputs: only created during lock states, with version increment.
+
+## No Client-Side AI
+- Do not call OpenAI directly from client components.

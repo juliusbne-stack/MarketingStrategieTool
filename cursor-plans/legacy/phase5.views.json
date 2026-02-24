@@ -1,0 +1,69 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_5",
+      "phase_name": "Content & Umsetzung",
+      "charts_library": "recharts",
+      "design_style": "bold_high_contrast",
+      "layout": "wizard_fullscreen"
+    },
+    "views": [
+      {
+        "artifact_id": "content_plan",
+        "view_id": "pillars_cards",
+        "type": "ui_cards",
+        "title": "Content-Säulen",
+        "ui": {
+          "repeat_over": "pillars",
+          "fields": [
+            { "from": "title", "label": "Säule" },
+            { "from": "core_messages", "label": "Kernbotschaften" },
+            { "from": "cta", "label": "CTA" }
+          ],
+          "max_items": 5
+        }
+      },
+      {
+        "artifact_id": "content_plan",
+        "view_id": "editorial_board_4w",
+        "type": "ui_board_4_columns",
+        "title": "Redaktionsplan (4 Wochen)",
+        "ui": {
+          "columns": [
+            { "key": "editorial_board_4w.week_1", "label": "Woche 1" },
+            { "key": "editorial_board_4w.week_2", "label": "Woche 2" },
+            { "key": "editorial_board_4w.week_3", "label": "Woche 3" },
+            { "key": "editorial_board_4w.week_4", "label": "Woche 4" }
+          ],
+          "card_fields": [
+            { "from": "channel", "label": "Kanal" },
+            { "from": "format", "label": "Format" },
+            { "from": "hook", "label": "Hook" },
+            { "from": "goal", "label": "Ziel" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "content_plan",
+        "view_id": "briefings_list",
+        "type": "ui_list_with_actions",
+        "title": "Briefings (mit Generate-Buttons)",
+        "ui": {
+          "items_from": "briefings",
+          "title_from": "title",
+          "meta_fields": [
+            { "from": "channel", "label": "Kanal" },
+            { "from": "format", "label": "Format" }
+          ],
+          "detail_fields": [
+            { "from": "objective", "label": "Ziel" },
+            { "from": "target_audience_hint", "label": "Zielgruppe" },
+            { "from": "key_points", "label": "Key Points" },
+            { "from": "cta", "label": "CTA" }
+          ],
+          "actions_from": "generate_actions"
+        }
+      }
+    ]
+  }
+  

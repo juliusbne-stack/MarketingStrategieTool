@@ -1,0 +1,144 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_3",
+      "phase_name": "Strategieumsetzung (Positionierung & Marke)",
+      "wizard_layout": true,
+      "max_iterations": 3,
+      "variant_output": "two_options"
+    },
+    "state_machine": {
+      "start_state": "p3_collect_inputs",
+      "states": [
+        {
+          "id": "p3_collect_inputs",
+          "type": "form_wizard",
+          "question_refs": [
+            "p3_offer_differentiation_sharpness",
+            "p3_market_role",
+            "p3_brand_emotion",
+            "p3_risk_vs_experiment",
+            "p3_proof_assets"
+          ],
+          "step_rules": {
+            "max_questions_per_step": 2,
+            "show_progress": true,
+            "allow_back": true,
+            "autosave": true
+          },
+          "on_complete": "p3_generate_variants"
+        },
+        {
+          "id": "p3_generate_variants",
+          "type": "ai_action",
+          "action": "generate_phase3_positioning_brand_two_variants",
+          "inputs": [
+            "answers.phase_1",
+            "artifacts.strategy_profile",
+            "answers.phase_2",
+            "artifacts.strategic_guidelines",
+            "answers.phase_3"
+          ],
+          "outputs": ["positioning_brand_variants"],
+          "on_complete": "p3_present_variants"
+        },
+        {
+          "id": "p3_present_variants",
+          "type": "results_variant_selector",
+          "artifact_ref": "positioning_brand_variants",
+          "ui": { "default_selected": "option_a" },
+          "on_select": "p3_lock_variant",
+          "on_request_changes": "p3_adjust_intake"
+        },
+        {
+          "id": "p3_lock_variant",
+          "type": "lock_variant",
+          "source_artifact": "positioning_brand_variants",
+          "locked_artifact_id": "positioning_and_brand_core",
+          "versioning": { "mode": "increment", "format": "v{n}" },
+          "on_complete": "p3_results_dashboard"
+        },
+        {
+          "id": "p3_results_dashboard",
+          "type": "results_dashboard",
+          "layout": "wizard_fullscreen_dashboard",
+          "primary_views": [
+            "positioning_hero",
+            "positioning_canvas",
+            "competitive_strategy_compare",
+            "brand_prism_visual",
+            "brand_wheel_visual",
+            "brand_voice_card"
+          ],
+          "on_complete": "p3_approval_gate"
+        },
+        {
+          "id": "p3_approval_gate",
+          "type": "approval_gate",
+          "question": "Passt diese Positionierung & Markenbasis für dich?",
+          "options": [
+            { "id": "approve", "label": "Ja, passt" },
+            { "id": "adjust", "label": "Nein, bitte anpassen" }
+          ],
+          "max_iterations": 3,
+          "on_approve": "p3_lock_phase",
+          "on_adjust": "p3_adjust_intake",
+          "on_max_iterations_reached": "p3_force_minimal_lock"
+        },
+        {
+          "id": "p3_adjust_intake",
+          "type": "form",
+          "fields": [
+            {
+              "id": "p3_adjust_area",
+              "type": "single_choice",
+              "label": "Was soll angepasst werden?",
+              "options": [
+                { "id": "competitive_strategy", "label": "Wettbewerbsstrategie" },
+                { "id": "positioning", "label": "Positionierung" },
+                { "id": "brand", "label": "Marke (Prism/Wheel/Voice)" }
+              ],
+              "required": true
+            },
+            {
+              "id": "p3_adjust_notes",
+              "type": "short_text",
+              "label": "Was soll anders werden?",
+              "required": true,
+              "validation": { "min_chars": 8, "max_chars": 280 }
+            }
+          ],
+          "on_complete": "p3_regenerate_core"
+        },
+        {
+          "id": "p3_regenerate_core",
+          "type": "ai_action",
+          "action": "regenerate_phase3_positioning_brand_core",
+          "inputs": [
+            "answers.phase_1",
+            "artifacts.strategy_profile",
+            "answers.phase_2",
+            "artifacts.strategic_guidelines",
+            "answers.phase_3",
+            "artifacts.positioning_and_brand_core",
+            "answers.phase_3_adjustments"
+          ],
+          "outputs": ["positioning_and_brand_core"],
+          "on_complete": "p3_results_dashboard"
+        },
+        {
+          "id": "p3_force_minimal_lock",
+          "type": "ai_action",
+          "action": "simplify_phase3_core_to_minimal_viable",
+          "on_complete": "p3_lock_phase"
+        },
+        {
+          "id": "p3_lock_phase",
+          "type": "lock_phase",
+          "locks": ["positioning_and_brand_core"],
+          "on_complete": "phase_4_start"
+        }
+      ]
+    }
+  }
+  

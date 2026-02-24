@@ -4,21 +4,20 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const { userId } = await auth();
-  
-  // Redirect authenticated users to dashboard
+
   if (userId) {
     redirect("/dashboard");
   }
-  
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
       <main className="flex flex-col items-center justify-center gap-6 text-center">
         <div className="flex flex-col gap-2">
           <h1 className="text-5xl font-bold tracking-tight text-black dark:text-zinc-50">
-            FlashyCardy
+            SaaS Template
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400">
-            Your personal flashcard platform
+            A clean foundation for your next product
           </p>
         </div>
         <div className="flex gap-4 mt-4">

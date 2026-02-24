@@ -1,0 +1,388 @@
+{
+  "meta": {
+    "spec_version": "1.0.0",
+    "language": "de",
+    "tone": "du",
+    "audience_level": "beginner_to_intermediate",
+    "phase_id": "phase_1",
+    "phase_name": "Situationsanalyse",
+    "max_steps_before_results": 10
+  },
+  "questions": [
+    {
+      "id": "p1_company_name",
+      "order": 5,
+      "type": "single_choice",
+      "question": "Wie heißt dein Unternehmen?",
+      "helper": "Optional. Wenn du noch keinen Namen hast, wähle die erste Option.",
+      "required": true,
+      "options": [
+        { "id": "no_name", "label": "Ich habe noch keinen Namen" },
+        { "id": "custom", "label": "Eigene Angaben (Name eingeben)" }
+      ],
+      "allow_custom": true,
+      "custom_min_chars": 2
+    },
+    {
+      "id": "p1_scope_offer",
+      "order": 10,
+      "type": "text_with_suggestions",
+      "question": "Für welchen Markt oder welches Angebot soll diese Marketing-Strategie entwickelt werden?",
+      "helper": "Beispiel: „Online-Marketing für meinen Fitnesskurs“ oder „SaaS für Recruiting“",
+      "required": true,
+      "validation": {
+        "min_chars": 5,
+        "max_chars": 160
+      }
+    },
+    {
+      "id": "p1_geo_market",
+      "order": 20,
+      "type": "single_choice",
+      "question": "In welchem geografischen Markt bewegst du dich hauptsächlich?",
+      "required": true,
+      "options": [
+        {
+          "id": "local",
+          "label": "Lokal"
+        },
+        {
+          "id": "regional",
+          "label": "Regional"
+        },
+        {
+          "id": "national",
+          "label": "National"
+        },
+        {
+          "id": "international",
+          "label": "International"
+        }
+      ],
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 80,
+      "other_mapping": {
+        "method": "llm_classify_to_options",
+        "on_low_confidence": "ask_disambiguation_once_then_set_unknown"
+      }
+    },
+    {
+      "id": "p1_offer_type",
+      "order": 30,
+      "type": "single_choice",
+      "question": "Was verkaufst du hauptsächlich?",
+      "required": true,
+      "options": [
+        {
+          "id": "custom",
+          "label": "Eigene Angaben"
+        },
+        {
+          "id": "service",
+          "label": "Dienstleistung"
+        },
+        {
+          "id": "product",
+          "label": "Produkt"
+        },
+        {
+          "id": "digital",
+          "label": "Digitale Produkte (Kurse, Software)"
+        },
+        {
+          "id": "mix",
+          "label": "Mischung"
+        },
+        {
+          "id": "unknown",
+          "label": "Weiß ich noch nicht genau"
+        }
+      ],
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 80,
+      "other_mapping": {
+        "method": "llm_classify_to_options",
+        "on_low_confidence": "ask_disambiguation_once_then_set_unknown"
+      },
+      "allow_custom": true,
+      "custom_min_chars": 5
+    },
+    {
+      "id": "p1_problem_solved",
+      "order": 40,
+      "type": "short_text",
+      "question": "Welches Problem löst dein Angebot?",
+      "helper": "1 Satz reicht. Beispiel: „Ich helfe X dabei, Y zu erreichen.“",
+      "required": true,
+      "validation": {
+        "min_chars": 10,
+        "max_chars": 220
+      }
+    },
+    {
+      "id": "p1_buyer_type",
+      "order": 50,
+      "type": "single_choice",
+      "question": "Wer kauft dein Angebot?",
+      "required": true,
+      "options": [
+        {
+          "id": "custom",
+          "label": "Eigene Angaben"
+        },
+        {
+          "id": "b2c",
+          "label": "Privatpersonen"
+        },
+        {
+          "id": "self_employed",
+          "label": "Selbstständige"
+        },
+        {
+          "id": "smb",
+          "label": "Kleine Unternehmen"
+        },
+        {
+          "id": "enterprise",
+          "label": "Große Unternehmen"
+        },
+        {
+          "id": "mix",
+          "label": "Mischung"
+        }
+      ],
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 80,
+      "other_mapping": {
+        "method": "llm_classify_to_options",
+        "on_low_confidence": "ask_disambiguation_once_then_set_unknown"
+      },
+      "allow_custom": true,
+      "custom_min_chars": 5
+    },
+    {
+      "id": "p1_customer_traits",
+      "order": 60,
+      "type": "multi_choice",
+      "question": "Welche Beschreibung passt am ehesten zu deinen Kunden?",
+      "required": true,
+      "options": [
+        {
+          "id": "custom",
+          "label": "Eigene Angaben"
+        },
+        {
+          "id": "price_sensitive",
+          "label": "Preisbewusst"
+        },
+        {
+          "id": "quality_oriented",
+          "label": "Qualitätsorientiert"
+        },
+        {
+          "id": "security",
+          "label": "Suchen Sicherheit"
+        },
+        {
+          "id": "growth",
+          "label": "Wollen wachsen / erfolgreicher werden"
+        },
+        {
+          "id": "tech_affine",
+          "label": "Technikaffin"
+        },
+        {
+          "id": "traditional",
+          "label": "Eher traditionell"
+        }
+      ],
+      "constraints": {
+        "max_selected": 4
+      },
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 120,
+      "other_mapping": {
+        "method": "llm_map_to_tags",
+        "on_low_confidence": "store_other_only"
+      },
+      "allow_custom": true,
+      "custom_min_chars": 5
+    },
+    {
+      "id": "p1_why_buy",
+      "order": 70,
+      "type": "multi_choice",
+      "question": "Warum sollten Kunden bei dir kaufen – und nicht woanders?",
+      "required": true,
+      "options": [
+        {
+          "id": "custom",
+          "label": "Eigene Angaben"
+        },
+        {
+          "id": "price",
+          "label": "Preis"
+        },
+        {
+          "id": "quality",
+          "label": "Qualität"
+        },
+        {
+          "id": "trust_personality",
+          "label": "Persönlichkeit / Vertrauen"
+        },
+        {
+          "id": "speed",
+          "label": "Schnelligkeit"
+        },
+        {
+          "id": "specialization",
+          "label": "Spezialisierung"
+        },
+        {
+          "id": "unknown",
+          "label": "Weiß ich noch nicht"
+        }
+      ],
+      "constraints": {
+        "max_selected": 3
+      },
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 120,
+      "other_mapping": {
+        "method": "llm_map_to_levers",
+        "on_low_confidence": "store_other_only"
+      },
+      "allow_custom": true,
+      "custom_min_chars": 5
+    },
+    {
+      "id": "p1_marketing_budget",
+      "order": 80,
+      "type": "single_choice",
+      "question": "Wie sieht dein Marketing-Budget aktuell aus?",
+      "helper": "Das hilft, die Strategie realistisch zu planen. Eine grobe Angabe reicht.",
+      "required": true,
+      "options": [
+        {
+          "id": "none",
+          "label": "0 € (nur organisch)"
+        },
+        {
+          "id": "low",
+          "label": "Klein (bis ca. 300 €/Monat)"
+        },
+        {
+          "id": "medium",
+          "label": "Mittel (300–1.500 €/Monat)"
+        },
+        {
+          "id": "high",
+          "label": "Höher (1.500 €+/Monat)"
+        },
+        {
+          "id": "unknown",
+          "label": "Weiß ich noch nicht"
+        }
+      ],
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 60,
+      "other_mapping": {
+        "method": "llm_classify_budget_band",
+        "on_low_confidence": "set_unknown_and_store_other"
+      }
+    },
+    {
+      "id": "p1_competitors_known",
+      "order": 90,
+      "type": "single_choice",
+      "question": "Kennst du andere Anbieter, die etwas Ähnliches machen?",
+      "required": true,
+      "options": [
+        {
+          "id": "many",
+          "label": "Ja, viele"
+        },
+        {
+          "id": "some",
+          "label": "Ja, ein paar"
+        },
+        {
+          "id": "few",
+          "label": "Kaum"
+        },
+        {
+          "id": "unknown",
+          "label": "Nein / weiß ich nicht"
+        }
+      ]
+    },
+    {
+      "id": "p1_competitor_names",
+      "order": 100,
+      "type": "list_text_optional",
+      "question": "Nenne 1–3 bekannte Wettbewerber (optional).",
+      "helper": "Nur wenn du welche kennst.",
+      "required": false,
+      "validation": {
+        "max_items": 3,
+        "max_chars_each": 60
+      }
+    },
+    {
+      "id": "p1_constraints",
+      "order": 110,
+      "type": "multi_choice",
+      "question": "Gibt es etwas, das dein Business einschränkt oder besonders beeinflusst?",
+      "required": true,
+      "options": [
+        {
+          "id": "custom",
+          "label": "Eigene Angaben"
+        },
+        {
+          "id": "legal",
+          "label": "Gesetzliche Vorgaben"
+        },
+        {
+          "id": "price_pressure",
+          "label": "Hoher Preisdruck"
+        },
+        {
+          "id": "online_competition",
+          "label": "Starker Online-Wettbewerb"
+        },
+        {
+          "id": "fast_trends",
+          "label": "Schnelle Trends"
+        },
+        {
+          "id": "none",
+          "label": "Nichts Besonderes"
+        },
+        {
+          "id": "unknown",
+          "label": "Weiß ich nicht"
+        }
+      ],
+      "constraints": {
+        "max_selected": 3
+      },
+      "allow_other": true,
+      "other_label": "Andere (kurz)",
+      "other_max_chars": 140,
+      "other_mapping": {
+        "method": "llm_map_to_constraints",
+        "on_low_confidence": "store_other_only"
+      },
+      "allow_custom": true,
+      "custom_min_chars": 5
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_3",
+      "phase_name": "Strategieumsetzung (Positionierung & Marke)",
+      "charts_library": "recharts",
+      "design_style": "bold_high_contrast",
+      "layout": "wizard_fullscreen"
+    },
+    "views": [
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "positioning_hero",
+        "type": "ui_hero_card",
+        "title": "Positionierung",
+        "ui": {
+          "headline_from": "positioning.statement",
+          "chips": [
+            { "from": "competitive_strategy.type", "label": "Wettbewerbsstrategie" },
+            { "from": "positioning.market_role", "label": "Marktrolle" }
+          ],
+          "callouts": [
+            { "from": "positioning.differentiation", "label": "Abgrenzung" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "positioning_canvas",
+        "type": "ui_canvas_card",
+        "title": "Positioning Canvas",
+        "ui": {
+          "fields": [
+            { "from": "positioning.canvas.target", "label": "Für wen?" },
+            { "from": "positioning.canvas.problem", "label": "Welches Problem?" },
+            { "from": "positioning.canvas.outcome", "label": "Welches Ergebnis?" },
+            { "from": "positioning.canvas.approach", "label": "Wie / Ansatz?" },
+            { "from": "positioning.canvas.proof", "label": "Warum glaubwürdig?" }
+          ],
+          "layout": "2_columns"
+        }
+      },
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "competitive_strategy_compare",
+        "type": "ui_detail_card",
+        "title": "Wettbewerbsstrategie",
+        "ui": {
+          "fields": [
+            { "from": "competitive_strategy.type", "label": "Typ" },
+            { "from": "competitive_strategy.rationale", "label": "Begründung" },
+            { "from": "competitive_strategy.tradeoffs", "label": "Trade-offs" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "brand_prism_visual",
+        "type": "ui_hex_prism",
+        "title": "Brand Identity Prism",
+        "ui": {
+          "nodes": [
+            { "key": "brand.prism.physique", "label": "Physique" },
+            { "key": "brand.prism.personality", "label": "Personality" },
+            { "key": "brand.prism.culture", "label": "Culture" },
+            { "key": "brand.prism.relationship", "label": "Relationship" },
+            { "key": "brand.prism.reflection", "label": "Reflection" },
+            { "key": "brand.prism.self_image", "label": "Self-Image" }
+          ],
+          "max_items_per_node": 3
+        }
+      },
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "brand_wheel_visual",
+        "type": "ui_brand_wheel",
+        "title": "Markensteuerrad",
+        "ui": {
+          "rings": [
+            { "key": "brand.brand_wheel.attributes", "label": "Attribute" },
+            { "key": "brand.brand_wheel.benefits", "label": "Nutzen" },
+            { "key": "brand.brand_wheel.values", "label": "Werte" },
+            { "key": "brand.brand_wheel.essence", "label": "Essenz", "as_center": true }
+          ],
+          "max_items_per_ring": 4
+        }
+      },
+      {
+        "artifact_id": "positioning_and_brand_core",
+        "view_id": "brand_voice_card",
+        "type": "ui_detail_card",
+        "title": "Markenstimme",
+        "ui": {
+          "fields": [
+            { "from": "brand.promise", "label": "Markenversprechen" },
+            { "from": "brand.values", "label": "Werte" },
+            { "from": "brand.voice.tone", "label": "Ton" },
+            { "from": "brand.voice.style_rules", "label": "Style-Regeln" },
+            { "from": "brand.voice.do", "label": "Do" },
+            { "from": "brand.voice.dont", "label": "Don’t" }
+          ]
+        }
+      }
+    ]
+  }
+  

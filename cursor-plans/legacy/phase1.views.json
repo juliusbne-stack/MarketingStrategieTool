@@ -1,0 +1,118 @@
+{
+    "meta": {
+      "spec_version": "1.0.0",
+      "phase_id": "phase_1",
+      "phase_name": "Situationsanalyse",
+      "charts_library": "recharts",
+      "design_style": "bold_high_contrast",
+      "layout": "wizard_fullscreen"
+    },
+    "views": [
+      {
+        "artifact_id": "strategy_profile",
+        "view_id": "strategy_profile_hero",
+        "type": "ui_hero_card",
+        "title": "Strategieprofil",
+        "ui": {
+          "headline_from": "summary.one_liner",
+          "chips": [
+            { "from": "inputs_echo.geo_market", "label": "Markt" },
+            { "from": "inputs_echo.offer_type", "label": "Angebot" },
+            { "from": "inputs_echo.buyer_type", "label": "Käufer" },
+            { "from": "inputs_echo.budget_band", "label": "Budget" }
+          ],
+          "callouts": [
+            { "from": "summary.recommended_direction", "label": "Empfohlene Richtung" }
+          ],
+          "metric_badges": [
+            { "from": "summary.market_pressure", "label": "Marktdruck" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "pestel",
+        "view_id": "pestel_radar",
+        "type": "recharts_radar",
+        "title": "PESTEL",
+        "encoding": { "angleKey": "label", "radiusKey": "impact" },
+        "ui": {
+          "tooltip_fields": ["label", "impact", "notes"],
+          "max_height_px": 320,
+          "legend": false
+        }
+      },
+      {
+        "artifact_id": "porter_5_forces",
+        "view_id": "porter_bars",
+        "type": "recharts_bar",
+        "title": "Markt- & Wettbewerbsanalyse (Porter-Modell)",
+        "encoding": { "xKey": "label", "yKey": "pressure" },
+        "ui": {
+          "tooltip_fields": ["label", "pressure", "insights"],
+          "max_height_px": 320
+        }
+      },
+      {
+        "artifact_id": "swot",
+        "view_id": "swot_grid",
+        "type": "ui_grid_2x2",
+        "title": "SWOT",
+        "ui": {
+          "cells": [
+            { "key": "strengths", "label": "Stärken" },
+            { "key": "weaknesses", "label": "Schwächen" },
+            { "key": "opportunities", "label": "Chancen" },
+            { "key": "threats", "label": "Risiken" }
+          ],
+          "max_items_per_cell": 6
+        }
+      },
+      {
+        "artifact_id": "strategic_group_map",
+        "view_id": "group_map_scatter",
+        "type": "recharts_scatter",
+        "title": "Strategisches Gruppenmapping",
+        "encoding": {
+          "xKey": "price_level",
+          "yKey": "specialization",
+          "sizeKey": "brand_strength",
+          "colorKey": "group"
+        },
+        "ui": {
+          "show_quadrants": true,
+          "highlight_self": true,
+          "max_height_px": 360
+        }
+      },
+      {
+        "artifact_id": "market_segmentation",
+        "view_id": "segmentation_cards",
+        "type": "ui_cards",
+        "title": "Marktsegmente",
+        "ui": {
+          "repeat_over": "segments",
+          "fields": [
+            { "from": "name", "label": "Segment" },
+            { "from": "who", "label": "Wer" },
+            { "from": "need", "label": "Bedarf" },
+            { "from": "attractiveness", "label": "Attraktivität" }
+          ]
+        }
+      },
+      {
+        "artifact_id": "target_profiles",
+        "view_id": "target_profile_cards",
+        "type": "ui_cards",
+        "title": "Zielgruppenprofile",
+        "ui": {
+          "repeat_over": "profiles",
+          "fields": [
+            { "from": "name", "label": "Profil" },
+            { "from": "summary", "label": "Kurzprofil" }
+          ],
+          "badges": [{ "from": "type", "label": "Typ" }]
+        }
+      }
+    ]
+  }
+  
