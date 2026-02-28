@@ -1,4 +1,4 @@
-# SaaS Template
+# marketing strategie tool
 
 A clean Next.js foundation for building SaaS products with:
 
