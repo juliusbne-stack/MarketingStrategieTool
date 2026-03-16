@@ -2,8 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Crown } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { listMyStrategyProjects } from "@/app/actions/strategy-project-actions";
 import { ProjectList } from "./project-list";
 import { CreateProjectForm } from "./create-project-form";
@@ -45,14 +43,6 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           <CreateProjectForm />
           <ProjectList projects={projects} />
-        </div>
-
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-6">
-          <p className="text-sm text-muted-foreground">
-            <Link href="/pricing" className="text-primary hover:underline">
-              View pricing
-            </Link>
-          </p>
         </div>
       </div>
     </div>

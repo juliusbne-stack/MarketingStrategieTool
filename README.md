@@ -1,6 +1,6 @@
-# SaaS Template
+# Your Marketing Strategic Agent
 
-A clean Next.js foundation for building SaaS products with:
+Ein Next.js-Projekt für deinen persönlichen Marketing-Strategie-Assistenten. Technischer Stack:
 
 - **Clerk** – Authentication and billing
 - **Neon** – PostgreSQL database
