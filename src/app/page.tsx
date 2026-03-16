@@ -2,8 +2,22 @@ import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
+const AUTH_TIMEOUT_MS = 8_000;
+
 export default async function Home() {
-  const { userId } = await auth();
+  let userId: string | null = null;
+  try {
+    const result = await Promise.race([
+      auth(),
+      new Promise<{ userId: null }>((_, reject) =>
+        setTimeout(() => reject(new Error("auth_timeout")), AUTH_TIMEOUT_MS)
+      ),
+    ]);
+    userId = result.userId ?? null;
+  } catch {
+    // Timeout or error: zeige Startseite, damit die Seite nicht ewig lädt
+    userId = null;
+  }
 
   if (userId) {
     redirect("/dashboard");
