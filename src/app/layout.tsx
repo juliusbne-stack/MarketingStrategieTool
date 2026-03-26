@@ -29,14 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: dark,
-      }}
-    >
-      <html lang="en" className="dark">
-        <body
-          className={`${poppins.variable} font-sans antialiased`}
+    <html lang="en" className="dark">
+      <body
+        className={`${poppins.variable} font-sans antialiased`}
+      >
+        <ClerkProvider
+          appearance={{
+            baseTheme: dark,
+          }}
         >
           <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
@@ -69,8 +69,8 @@ export default function RootLayout({
             </div>
           </header>
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
