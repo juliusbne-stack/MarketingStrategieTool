@@ -1,4 +1,4 @@
-import { PricingTable } from "@clerk/nextjs";
+import PricingContentClient from '../../components/PricingContentClient';
 
 export default function PricingPage() {
   return (
@@ -13,9 +13,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-8">
-          <PricingTable />
-        </div>
+        <PricingContentClient />
       </div>
     </div>
   );

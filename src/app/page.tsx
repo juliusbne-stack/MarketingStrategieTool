@@ -2,6 +2,8 @@ import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 const AUTH_TIMEOUT_MS = 8_000;
 
 export default async function Home() {

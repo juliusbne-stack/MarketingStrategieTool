@@ -6,6 +6,8 @@ import { listMyStrategyProjects } from "@/app/actions/strategy-project-actions";
 import { ProjectList } from "./project-list";
 import { CreateProjectForm } from "./create-project-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const { userId, has } = await auth();
 

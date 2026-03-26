@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { listMyStrategyProjects } from "@/app/actions/strategy-project-actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function WizardPhase5RedirectPage() {
   const { userId } = await auth();
   if (!userId) redirect("/");

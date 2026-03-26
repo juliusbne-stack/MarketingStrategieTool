@@ -21,6 +21,7 @@
     "@clerk/nextjs": "^6.37.3",
     "@clerk/themes": "^2.4.51",
     "@neondatabase/serverless": "^1.0.2",
+    "@netlify/plugin-nextjs": "^5.15.9",
     "@react-pdf/renderer": "^4.3.2",
     "ai": "^6.0.82",
     "bufferutil": "^4.1.0",
