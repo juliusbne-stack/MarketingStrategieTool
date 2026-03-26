@@ -1,4 +1,13 @@
-import { PricingTable } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
+
+const PricingContent = dynamic(() => import("./pricing-content"), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-8 text-center text-zinc-500">
+      Loading pricing…
+    </div>
+  ),
+});
 
 export default function PricingPage() {
   return (
@@ -13,9 +22,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-8">
-          <PricingTable />
-        </div>
+        <PricingContent />
       </div>
     </div>
   );
