@@ -1,13 +1,4 @@
-import dynamic from "next/dynamic";
-
-const PricingContent = dynamic(() => import("./pricing-content"), {
-  ssr: false,
-  loading: () => (
-    <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-8 text-center text-zinc-500">
-      Loading pricing…
-    </div>
-  ),
-});
+import PricingContentClient from '../../components/PricingContentClient';
 
 export default function PricingPage() {
   return (
@@ -22,7 +13,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <PricingContent />
+        <PricingContentClient />
       </div>
     </div>
   );
