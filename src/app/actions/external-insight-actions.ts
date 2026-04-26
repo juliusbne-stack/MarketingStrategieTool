@@ -39,6 +39,7 @@ import { clusterSources } from "@/lib/server/source-clustering";
 import {
   verifyUrl,
   filterVerifiedSourcesInPestelArtifact,
+  shouldSkipPestelUrlReachabilityVerify,
 } from "@/lib/server/verify-url";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -776,13 +777,18 @@ export async function refreshExternalDrivers(
     const allSourcesForVerify = Array.from(canonicalToResult.values());
     diagnostics.whitelistKeptCount = allSourcesForVerify.length;
 
+    const skipReachability = shouldSkipPestelUrlReachabilityVerify();
     const verified: Array<SearchResult & { domain: string }> = [];
     let sourcesDroppedNotVerified = 0;
     for (const r of allSourcesForVerify.slice(0, 50)) {
       if (verified.length >= MAX_VERIFIED_FOR_GPT) break;
-      const ok = await verifyUrl(r.url);
+      const url = typeof r.url === "string" ? r.url.trim() : "";
+      const domainFromUrl = getDomainFromUrl(url);
+      const ok = skipReachability
+        ? (url.startsWith("http://") || url.startsWith("https://")) && !!domainFromUrl
+        : await verifyUrl(url);
       if (ok) {
-        const domain = getDomainFromUrl(r.url) ?? "";
+        const domain = domainFromUrl ?? "";
         verified.push({ ...r, domain });
       } else {
         sourcesDroppedNotVerified++;

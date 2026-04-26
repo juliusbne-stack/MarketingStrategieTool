@@ -6,6 +6,7 @@
 
 import {
   getDomainFromUrl,
+  hasValidSource,
   type ExternalDriversArtifact,
   type ExternalDriverSource,
 } from "./external-drivers-types";
@@ -65,6 +66,25 @@ const MIN_SOURCES_PER_DRIVER = 2;
 const MIN_DOMAINS_PER_DRIVER = 2;
 
 /**
+ * Many hosts (Netlify, Vercel) block or throttle outbound HEAD/GET to arbitrary news URLs,
+ * so live verification drops every source → empty Umfeld-Insights. When true, we only
+ * require well-formed http(s) URLs + ISO dates (same bar as the UI), not HTTP reachability.
+ *
+ * - Set `PESTEL_SKIP_URL_VERIFICATION=0` to force live checks even on Netlify/Vercel.
+ * - Set `PESTEL_SKIP_URL_VERIFICATION=1` to skip reachability everywhere.
+ */
+export function shouldSkipPestelUrlReachabilityVerify(): boolean {
+  if (process.env.PESTEL_SKIP_URL_VERIFICATION === "0") return false;
+  if (
+    process.env.PESTEL_SKIP_URL_VERIFICATION === "1" ||
+    process.env.PESTEL_SKIP_URL_VERIFICATION === "true"
+  ) {
+    return true;
+  }
+  return process.env.NETLIFY === "true" || process.env.VERCEL === "1";
+}
+
+/**
  * Filters pestel (External Drivers) artifact: keeps only sources with verified URLs.
  * When useDomainWhitelist=true (Umfeld-Insights): also enforces domain whitelist.
  * Drops drivers with <2 sources or <2 domains. Drops categories with no drivers.
@@ -75,6 +95,7 @@ export async function filterVerifiedSourcesInPestelArtifact(
   _options?: { useDomainWhitelist?: boolean }
 ): Promise<Record<string, unknown>> {
   const categories = (data.categories as ExternalDriversArtifact["categories"]) ?? [];
+  const skipReachability = shouldSkipPestelUrlReachabilityVerify();
 
   const filteredCategories = await Promise.all(
     categories.map(async (cat) => {
@@ -85,7 +106,10 @@ export async function filterVerifiedSourcesInPestelArtifact(
           );
           const verified: ExternalDriverSource[] = [];
           for (const src of sources) {
-            if (await verifyUrl(src.url)) {
+            const keep = skipReachability
+              ? hasValidSource(src)
+              : await verifyUrl(src.url);
+            if (keep) {
               const domain = getDomainFromUrl(src.url);
               verified.push({ ...src, domain: domain ?? undefined });
             }
