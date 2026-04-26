@@ -52,11 +52,12 @@ const porterKeyEnum = z.enum([
   "buyer_power",
   "supplier_power",
 ]);
+/** OpenAI strict JSON: every key in `properties` must appear in `required` — no optional fields. */
 const EntryBarrierSchemaForOpenAI = z.object({
   name: z.string(),
   strength: z.enum(["Niedrig", "Mittel", "Hoch"]),
   rationale: z.string().max(300),
-  details: z.string().max(1200).optional(),
+  details: z.string().max(1200),
 });
 const NewEntrantsDetailedSchemaForOpenAI = z.object({
   stability_level: z.enum(["Niedrig", "Mittel", "Hoch"]),
