@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DevRefreshButton } from "@/components/final-dashboard/dev-refresh-button";
+import { toWizardArtifactsClientPayload } from "@/lib/server/artifacts-client-payload";
 
 export default async function Phase1WizardPage({
   params,
@@ -32,6 +33,7 @@ export default async function Phase1WizardPage({
   ]);
   const isLocked = session.status === "locked";
   const hasArtifacts = artifacts.length > 0;
+  const artifactsForClient = toWizardArtifactsClientPayload(artifacts);
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +67,7 @@ export default async function Phase1WizardPage({
       {hasArtifacts && (
         <>
           <ResultsDashboard
-            artifacts={artifacts}
+            artifacts={artifactsForClient}
             isLocked={isLocked}
             projectId={projectIdNum}
             externalInsightMeta={externalInsightMeta}

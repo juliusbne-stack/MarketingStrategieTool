@@ -37,6 +37,7 @@ import { ExecSummarySection } from "@/components/final-dashboard/exec-summary-se
 import { DashboardFilters } from "@/components/final-dashboard/dashboard-filters";
 import { PdfExportButton } from "@/components/final-dashboard/pdf-export-button";
 import { DevRefreshButton } from "@/components/final-dashboard/dev-refresh-button";
+import { toWizardArtifactsClientPayload } from "@/lib/server/artifacts-client-payload";
 
 function getArtifact(
   artifacts: { artifactKey: string; data: unknown }[],
@@ -157,6 +158,9 @@ export default async function FinalDashboardPage({
   ]);
 
   const strategyProfile = getArtifact(phase1Artifacts, "strategy_profile");
+  const phase1ArtifactsClient = toWizardArtifactsClientPayload(phase1Artifacts);
+  const phase2ArtifactsClient = toWizardArtifactsClientPayload(phase2Artifacts);
+  const phase3ArtifactsClient = toWizardArtifactsClientPayload(phase3Artifacts);
   const externalInsightMeta = await getExternalInsightMeta(projectIdNum);
   const strategicGuidelines = getArtifact(
     phase2Artifacts,
@@ -242,7 +246,7 @@ export default async function FinalDashboardPage({
               </h2>
               {hasPhase1 ? (
                 <Phase1ResultsDashboard
-                  artifacts={phase1Artifacts}
+                  artifacts={phase1ArtifactsClient}
                   isLocked={phase1Session.status === "locked"}
                   showStrategyProfile={false}
                   projectId={projectIdNum}
@@ -261,7 +265,7 @@ export default async function FinalDashboardPage({
               </h2>
               {hasPhase2 ? (
                 <Phase2ResultsDashboard
-                  artifacts={phase2Artifacts}
+                  artifacts={phase2ArtifactsClient}
                   isLocked={phase2Session.status === "locked"}
                 />
               ) : (
@@ -277,7 +281,7 @@ export default async function FinalDashboardPage({
               </h2>
               {hasPhase3 ? (
                 <Phase3ResultsDashboard
-                  artifacts={phase3Artifacts}
+                  artifacts={phase3ArtifactsClient}
                   isLocked={phase3Session.status === "locked"}
                 />
               ) : (

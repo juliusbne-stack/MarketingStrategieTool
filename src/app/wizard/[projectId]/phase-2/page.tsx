@@ -17,6 +17,7 @@ import { VariantSelector } from "@/app/wizard/phase-2/_components/variant-select
 import { ResultsDashboard } from "@/app/wizard/phase-2/_components/results-dashboard";
 import { ApprovalGate } from "@/app/wizard/phase-2/_components/approval-gate";
 import type { Variant } from "@/app/wizard/phase-2/_components/variant-selector";
+import { toWizardArtifactsClientPayload } from "@/lib/server/artifacts-client-payload";
 
 function getArtifact(
   artifacts: { artifactKey: string; data: unknown }[],
@@ -102,6 +103,7 @@ export default async function Phase2WizardPage({
   const iterationCount = getIterationCount(artifacts);
 
   const variants = (variantsArtifact?.variants ?? []) as Variant[];
+  const artifactsForClient = toWizardArtifactsClientPayload(artifacts);
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,7 +144,7 @@ export default async function Phase2WizardPage({
 
       {guidelinesArtifact && (
         <>
-          <ResultsDashboard artifacts={artifacts} isLocked={isLocked} />
+          <ResultsDashboard artifacts={artifactsForClient} isLocked={isLocked} />
           {!isLocked && (
             <ApprovalGate
               projectId={projectIdNum}
