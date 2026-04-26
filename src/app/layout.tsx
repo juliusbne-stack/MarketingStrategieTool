@@ -10,6 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { HeaderProfileButton } from "@/components/header-profile-button";
 import { dark } from "@clerk/themes";
+import { isClerkPublishableKeyConfigured } from "@/lib/clerk-env";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -63,14 +64,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const clerkEnabled = isClerkPublishableKeyConfigured();
 
   return (
     <html lang="en" className="dark">
       <body
         className={`${poppins.variable} font-sans antialiased`}
       >
-        {clerkKey ? (
+        {clerkEnabled ? (
           <ClerkProvider
             appearance={{
               baseTheme: dark,
