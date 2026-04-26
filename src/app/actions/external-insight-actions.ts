@@ -1898,80 +1898,91 @@ export type ExternalInsightMeta = {
   } | null;
 };
 
+function externalInsightMetaFallback(
+  searchConfigured: boolean
+): ExternalInsightMeta {
+  return {
+    generatedAt: null,
+    canRefresh: false,
+    nextRefreshInHours: null,
+    jobRunning: false,
+    searchConfigured,
+    showForceRefresh: isDev,
+  };
+}
+
 export async function getExternalInsightMeta(
   projectId: number
 ): Promise<ExternalInsightMeta> {
-  const { userId } = await auth();
   const searchConfigured = isSearchConfigured();
+  const { userId } = await auth();
   if (!userId) {
+    return externalInsightMetaFallback(searchConfigured);
+  }
+
+  try {
+    const [lastJob] = await db
+      .select()
+      .from(externalInsightJobsTable)
+      .where(
+        and(
+          eq(externalInsightJobsTable.projectId, projectId),
+          eq(externalInsightJobsTable.userId, userId)
+        )
+      )
+      .orderBy(desc(externalInsightJobsTable.startedAt))
+      .limit(1);
+
+    const jobRunning = lastJob?.status === "running";
+    const RATE_LIMIT_MS = RATE_LIMIT_HOURS * 60 * 60 * 1000;
+    let canRefresh = true;
+    let nextRefreshInHours: number | null = null;
+
+    if (
+      lastJob?.triggeredBy === "manual" &&
+      lastJob?.startedAt &&
+      lastJob.status !== "failed"
+    ) {
+      const elapsed = Date.now() - new Date(lastJob.startedAt).getTime();
+      if (elapsed < RATE_LIMIT_MS) {
+        canRefresh = false;
+        nextRefreshInHours = Math.ceil(
+          (RATE_LIMIT_MS - elapsed) / (60 * 60 * 1000)
+        );
+      }
+    }
+
+    const generatedAt =
+      lastJob?.status === "success" && lastJob?.resultGeneratedAt
+        ? lastJob.resultGeneratedAt.toISOString()
+        : null;
+
+    const diag = lastJob?.diagnostics as { errorStage?: string; externalSearchError?: ExternalSearchError } | null;
+    const lastSearchError =
+      lastJob?.status === "failed" && diag?.errorStage === "search" && diag?.externalSearchError
+        ? diag.externalSearchError
+        : null;
+
     return {
-      generatedAt: null,
-      canRefresh: false,
-      nextRefreshInHours: null,
-      jobRunning: false,
+      generatedAt,
+      canRefresh: searchConfigured ? canRefresh : false,
+      nextRefreshInHours,
+      jobRunning,
       searchConfigured,
       showForceRefresh: isDev,
+      lastSearchError: lastSearchError ?? undefined,
+      ...(isDev &&
+        lastJob && {
+          lastJob: {
+            status: lastJob.status,
+            finishedAt: lastJob.finishedAt?.toISOString() ?? null,
+            error: lastJob.error ?? null,
+            diagnostics: lastJob.diagnostics as JobDiagnostics | null,
+          },
+        }),
     };
+  } catch (err) {
+    console.error("[getExternalInsightMeta]", err);
+    return externalInsightMetaFallback(searchConfigured);
   }
-
-  const [lastJob] = await db
-    .select()
-    .from(externalInsightJobsTable)
-    .where(
-      and(
-        eq(externalInsightJobsTable.projectId, projectId),
-        eq(externalInsightJobsTable.userId, userId)
-      )
-    )
-    .orderBy(desc(externalInsightJobsTable.startedAt))
-    .limit(1);
-
-  const jobRunning = lastJob?.status === "running";
-  const RATE_LIMIT_MS = RATE_LIMIT_HOURS * 60 * 60 * 1000;
-  let canRefresh = true;
-  let nextRefreshInHours: number | null = null;
-
-  if (
-    lastJob?.triggeredBy === "manual" &&
-    lastJob?.startedAt &&
-    lastJob.status !== "failed"
-  ) {
-    const elapsed = Date.now() - new Date(lastJob.startedAt).getTime();
-    if (elapsed < RATE_LIMIT_MS) {
-      canRefresh = false;
-      nextRefreshInHours = Math.ceil(
-        (RATE_LIMIT_MS - elapsed) / (60 * 60 * 1000)
-      );
-    }
-  }
-
-  const generatedAt =
-    lastJob?.status === "success" && lastJob?.resultGeneratedAt
-      ? lastJob.resultGeneratedAt.toISOString()
-      : null;
-
-  const diag = lastJob?.diagnostics as { errorStage?: string; externalSearchError?: ExternalSearchError } | null;
-  const lastSearchError =
-    lastJob?.status === "failed" && diag?.errorStage === "search" && diag?.externalSearchError
-      ? diag.externalSearchError
-      : null;
-
-  return {
-    generatedAt,
-    canRefresh: searchConfigured ? canRefresh : false,
-    nextRefreshInHours,
-    jobRunning,
-    searchConfigured,
-    showForceRefresh: isDev,
-    lastSearchError: lastSearchError ?? undefined,
-    ...(isDev &&
-      lastJob && {
-        lastJob: {
-          status: lastJob.status,
-          finishedAt: lastJob.finishedAt?.toISOString() ?? null,
-          error: lastJob.error ?? null,
-          diagnostics: lastJob.diagnostics as JobDiagnostics | null,
-        },
-      }),
-  };
 }
