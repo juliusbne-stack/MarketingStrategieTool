@@ -6,13 +6,16 @@ import {
 } from "@/lib/server/phase1-session";
 import { getExternalInsightMeta } from "@/app/actions/external-insight-actions";
 import { InputWizard } from "@/app/wizard/phase-1/_components/input-wizard";
-import { ResultsDashboard } from "@/app/wizard/phase-1/_components/results-dashboard";
+import { Phase1ResultsDashboardLoader } from "@/app/wizard/phase-1/_components/phase-1-results-dashboard-loader";
 import { ApprovalGate } from "@/app/wizard/phase-1/_components/approval-gate";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DevRefreshButton } from "@/components/final-dashboard/dev-refresh-button";
-import { toWizardArtifactsClientPayload } from "@/lib/server/artifacts-client-payload";
+import {
+  toWizardArtifactsClientPayload,
+  cloneJsonSafe,
+} from "@/lib/server/artifacts-client-payload";
 
 export default async function Phase1WizardPage({
   params,
@@ -34,6 +37,7 @@ export default async function Phase1WizardPage({
   const isLocked = session.status === "locked";
   const hasArtifacts = artifacts.length > 0;
   const artifactsForClient = toWizardArtifactsClientPayload(artifacts);
+  const insightMetaForClient = cloneJsonSafe(externalInsightMeta);
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,11 +70,11 @@ export default async function Phase1WizardPage({
 
       {hasArtifacts && (
         <>
-          <ResultsDashboard
+          <Phase1ResultsDashboardLoader
             artifacts={artifactsForClient}
             isLocked={isLocked}
             projectId={projectIdNum}
-            externalInsightMeta={externalInsightMeta}
+            externalInsightMeta={insightMetaForClient}
           />
           <ApprovalGate
             projectId={projectIdNum}

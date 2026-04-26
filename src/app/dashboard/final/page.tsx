@@ -28,7 +28,7 @@ import {
 } from "@/lib/server/phase5-session";
 import { listMyStrategyProjects } from "@/app/actions/strategy-project-actions";
 import { getExternalInsightMeta } from "@/app/actions/external-insight-actions";
-import { ResultsDashboard as Phase1ResultsDashboard } from "@/app/wizard/phase-1/_components/results-dashboard";
+import { Phase1ResultsDashboardLoader } from "@/app/wizard/phase-1/_components/phase-1-results-dashboard-loader";
 import { ResultsDashboard as Phase2ResultsDashboard } from "@/app/wizard/phase-2/_components/results-dashboard";
 import { ResultsDashboard as Phase3ResultsDashboard } from "@/app/wizard/phase-3/_components/results-dashboard";
 import { FinalResultsDashboard as Phase4FinalResultsDashboard } from "@/app/wizard/phase-4/_components/final-results-dashboard";
@@ -37,7 +37,10 @@ import { ExecSummarySection } from "@/components/final-dashboard/exec-summary-se
 import { DashboardFilters } from "@/components/final-dashboard/dashboard-filters";
 import { PdfExportButton } from "@/components/final-dashboard/pdf-export-button";
 import { DevRefreshButton } from "@/components/final-dashboard/dev-refresh-button";
-import { toWizardArtifactsClientPayload } from "@/lib/server/artifacts-client-payload";
+import {
+  toWizardArtifactsClientPayload,
+  cloneJsonSafe,
+} from "@/lib/server/artifacts-client-payload";
 
 function getArtifact(
   artifacts: { artifactKey: string; data: unknown }[],
@@ -162,6 +165,7 @@ export default async function FinalDashboardPage({
   const phase2ArtifactsClient = toWizardArtifactsClientPayload(phase2Artifacts);
   const phase3ArtifactsClient = toWizardArtifactsClientPayload(phase3Artifacts);
   const externalInsightMeta = await getExternalInsightMeta(projectIdNum);
+  const externalInsightMetaForClient = cloneJsonSafe(externalInsightMeta);
   const strategicGuidelines = getArtifact(
     phase2Artifacts,
     "strategic_guidelines"
@@ -211,7 +215,7 @@ export default async function FinalDashboardPage({
           <div className="flex items-center gap-4 flex-wrap">
             <DevRefreshButton
               projectId={projectIdNum}
-              searchConfigured={externalInsightMeta?.searchConfigured ?? true}
+              searchConfigured={externalInsightMetaForClient?.searchConfigured ?? true}
             />
             <PdfExportButton projectId={projectIdNum} />
             <Button variant="outline" size="sm" asChild>
@@ -245,12 +249,12 @@ export default async function FinalDashboardPage({
                 Phase 1 — Situationsanalyse
               </h2>
               {hasPhase1 ? (
-                <Phase1ResultsDashboard
+                <Phase1ResultsDashboardLoader
                   artifacts={phase1ArtifactsClient}
                   isLocked={phase1Session.status === "locked"}
                   showStrategyProfile={false}
                   projectId={projectIdNum}
-                  externalInsightMeta={externalInsightMeta}
+                  externalInsightMeta={externalInsightMetaForClient}
                 />
               ) : (
                 <MissingPhaseHint projectId={projectIdNum} phaseId="phase_1" />
